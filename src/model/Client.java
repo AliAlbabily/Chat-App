@@ -2,12 +2,15 @@ package model;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.HashMap;
 
 public class Client extends Thread {
 
     private Socket socket;
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
+
+    private Clients localClientsObj = new Clients();
 
     public Client(String ipAddress, int port) {
         System.out.println("Establishing connection. Please wait...");
@@ -27,31 +30,18 @@ public class Client extends Thread {
         while(!Thread.interrupted()) {
             System.out.println("Running");
 
-            Buffer<Message> messagesBuffer = new Buffer<Message>();
-            // TODO : hårdkodade data, datan bör var dynamsika
-            User user = new User("Johan", null);
-            Message messageTest = new Message(user, "Hello, It's me");
-            messagesBuffer.put(messageTest);
-
-
+            // TODO : test
 //            try {
-//                while(true) {
+//                while (true) {
+//                    Object objRecieved = ois.readObject();
 //
-//                    Message message = messagesBuffer.get();
-//                    if(message != null) {
-//                        System.out.println("Client sent: " + message.toString());
-//                        oos.writeObject(message);
-//                        oos.flush();
+//                    if(objRecieved instanceof Clients) {
+//                        System.out.println("Clients obj recieved");
 //                    }
-//
-//                    Message messageRecieved = (Message) ois.readObject();
-//                    System.out.println("Client recieved: " + messageRecieved.toString());
-//
 //                }
-//            }catch(IOException | InterruptedException | ClassNotFoundException e) {
+//            } catch (IOException | ClassNotFoundException e) {
 //                e.printStackTrace();
 //            }
-
 
         }
     }

@@ -29,13 +29,11 @@ public class Server {
                     try {
                         socket = serverSocket.accept(); // Lyssna efter anslutande klient
 
-                        // TODO : ClientHandler behöver sparas i hashmapen
                         new ClientHandler(socket).start();
-
 
                     } catch(IOException e) {
                         System.err.println(e);
-                        if(socket!=null)
+                        if(socket != null)
                             socket.close();
                     }
                 }
@@ -49,10 +47,6 @@ public class Server {
     public class ClientHandler extends Thread {
         private Socket socket;
 
-        Message recievedMessage;
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-        LocalDateTime now = LocalDateTime.now();
-
         public ClientHandler(Socket socket) throws IOException {
             this.socket = socket;
             System.out.println("A new client has connected to the server!");
@@ -64,17 +58,18 @@ public class Server {
             {
                 while(true) {
 
-//                    recievedMessage = (Message) ois.readObject();
-//                    if(recievedMessage != null) {
-//                        System.out.println("Server recieved message at: " + dtf.format(now));
-//                    }
-//
-//                    oos.writeObject(recievedMessage);
-//                    oos.flush();
-
                     Object objRecieved = ois.readObject();
+
                     if(objRecieved instanceof User) {
-                        globalClientsObj.put((User)objRecieved, this);
+                        // ClientHandler behöver sparas i hashmapen till sin motsvarande User
+                        globalClientsObj.put((User)objRecieved, this); // FIXME : osäkert på om "this" referar till ClientHandler eller inte
+
+                        System.out.println(globalClientsObj.getHashMapList().size());
+
+                        // FIXME the 2 lines below are bugged !!
+//                        oos.writeObject(globalClientsObj);
+//                        oos.flush();
+                        //
                     }
 
                 }
