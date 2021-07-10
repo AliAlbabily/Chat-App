@@ -27,7 +27,7 @@ public class Controller {
                 ImageIcon imageIcon = clientGUI.getImageIcon();
                 User newUser = new User(username, imageIcon); // skapar ny User-instans
 
-                Client newClient = new Client("25.82.118.228", 2343); // skapar ny Client-instans
+                Client newClient = new Client("127.0.0.1", 2343); // skapar ny Client-instans
                 newClient.sendUserToServer(newUser);
 
                 // FIXME : test

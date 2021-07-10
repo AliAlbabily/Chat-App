@@ -31,17 +31,14 @@ public class Client extends Thread {
             System.out.println("Running");
 
             // TODO : test
-//            try {
-//                while (true) {
-//                    Object objRecieved = ois.readObject();
-//
-//                    if(objRecieved instanceof Clients) {
-//                        System.out.println("Clients obj recieved");
-//                    }
-//                }
-//            } catch (IOException | ClassNotFoundException e) {
-//                e.printStackTrace();
-//            }
+            try {
+                while (true) {
+                    String str = ois.readUTF();
+                    System.out.println(str);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
         }
     }

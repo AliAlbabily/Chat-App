@@ -64,12 +64,7 @@ public class Server {
                         // ClientHandler behöver sparas i hashmapen till sin motsvarande User
                         globalClientsObj.put((User)objRecieved, this); // FIXME : osäkert på om "this" referar till ClientHandler eller inte
 
-                        System.out.println(globalClientsObj.getHashMapList().size());
-
-                        // FIXME the 2 lines below are bugged !!
-//                        oos.writeObject(globalClientsObj);
-//                        oos.flush();
-                        //
+                        notifyAllClinets(oos);
                     }
 
                 }
@@ -89,5 +84,11 @@ public class Server {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    // TODO : meddela andra klienter
+    private void notifyAllClinets(ObjectOutputStream oos) throws IOException {
+        oos.writeChars("Ett meddelande från Servern");
+        oos.flush();
     }
 }
