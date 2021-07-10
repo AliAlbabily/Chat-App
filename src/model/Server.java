@@ -64,7 +64,7 @@ public class Server {
                         // ClientHandler behöver sparas i hashmapen till sin motsvarande User
                         globalClientsObj.put((User)objRecieved, this); // FIXME : osäkert på om "this" referar till ClientHandler eller inte
 
-                        notifyAllClinets(oos);
+                        notifyAllClinets(oos, objRecieved);
                     }
 
                 }
@@ -87,8 +87,8 @@ public class Server {
     }
 
     // TODO : meddela andra klienter
-    private void notifyAllClinets(ObjectOutputStream oos) throws IOException {
-        oos.writeChars("Ett meddelande från Servern");
+    private void notifyAllClinets(ObjectOutputStream oos, Object objRecieved) throws IOException {
+        oos.writeObject( objRecieved );
         oos.flush();
     }
 }
