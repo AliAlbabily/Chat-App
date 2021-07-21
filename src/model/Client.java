@@ -2,15 +2,12 @@ package model;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.HashMap;
 
 public class Client extends Thread {
 
     private Socket socket;
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
-
-    private Clients localClientsObj = new Clients();
 
     public Client(String ipAddress, int port) {
         System.out.println("Establishing connection. Please wait...");
@@ -30,7 +27,6 @@ public class Client extends Thread {
         while(!Thread.interrupted()) {
             System.out.println("Running");
 
-            // TODO : test
             while (true) {
                 try {
                     Object obj = ois.readObject();
@@ -40,7 +36,6 @@ public class Client extends Thread {
                     e.printStackTrace();
                 }
             }
-
         }
     }
 

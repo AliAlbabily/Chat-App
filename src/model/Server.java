@@ -3,12 +3,10 @@ package model;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 public class Server {
 
-    private Clients globalClientsObj = new Clients();
+    private Clients globalOnlineUsers = new Clients(); // lista av anslutna användare (online users)
 
     public Server(int port) throws IOException {
         new Connection(port).start();
@@ -27,10 +25,8 @@ public class Server {
             try (ServerSocket serverSocket = new ServerSocket(port)) {
                 while(true) {
                     try {
-                        socket = serverSocket.accept(); // Lyssna efter anslutande klient
-
+                        socket = serverSocket.accept(); // Lyssna efter anslutande klienter
                         new ClientHandler(socket).start();
-
                     } catch(IOException e) {
                         System.err.println(e);
                         if(socket != null)
@@ -46,6 +42,10 @@ public class Server {
 
     public class ClientHandler extends Thread {
         private Socket socket;
+        ObjectOutputStream oos;
+        ObjectInputStream ois;
+
+        User key = null;
 
         public ClientHandler(Socket socket) throws IOException {
             this.socket = socket;
@@ -53,18 +53,17 @@ public class Server {
         }
 
         public void run() {
-            try (ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-                    ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());)
-            {
-                while(true) {
+            try {
+                oos = new ObjectOutputStream(socket.getOutputStream());
+                ois = new ObjectInputStream(socket.getInputStream());
 
+                while(true) {
                     Object objRecieved = ois.readObject();
 
                     if(objRecieved instanceof User) {
-                        // ClientHandler behöver sparas i hashmapen till sin motsvarande User
-                        globalClientsObj.put((User)objRecieved, this); // FIXME : osäkert på om "this" referar till ClientHandler eller inte
-
-                        notifyAllClinets(oos, objRecieved);
+                        key = (User)objRecieved;
+                        globalOnlineUsers.put((User)objRecieved, this); // spara en referens av ClientHandler i hashmapen med sin motsvarande User
+                        notifyAllClients(objRecieved);
                     }
 
                 }
@@ -72,9 +71,14 @@ public class Server {
             catch (IOException | ClassNotFoundException e) {
                 try {
                     socket.close();
-                    System.out.println("Klient nerkopplad");
+                    System.out.println("Client disconnected!");
+                    globalOnlineUsers.getHashMapList().remove(key); // uppdatera listan av anslutna användare när någon kopplar av
                 } catch (Exception e2) {}
             }
+        }
+
+        public ObjectOutputStream getOos() {
+            return oos;
         }
     }
 
@@ -86,9 +90,14 @@ public class Server {
         }
     }
 
-    // TODO : meddela andra klienter
-    private void notifyAllClinets(ObjectOutputStream oos, Object objRecieved) throws IOException {
-        oos.writeObject( objRecieved );
-        oos.flush();
+    // meddela andra klienter om en ny ansluten användare
+    private void notifyAllClients(Object user) throws IOException {
+        // få tag på alla ClientHandlers i hashmappen
+        for ( User key : globalOnlineUsers.getHashMapList().keySet() ) {
+            ClientHandler client = globalOnlineUsers.getHashMapList().get(key);
+            // Skicka den nya koppplade user till alla klienter
+            client.getOos().writeObject( user );
+            client.getOos().flush();
+        }
     }
 }
