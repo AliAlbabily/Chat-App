@@ -2,12 +2,16 @@ package model;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class Client extends Thread {
 
     private Socket socket;
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
+
+    // TODO : skapa en lista för online användare och kontakter
+    ArrayList<User> onlineUsers = new ArrayList<>();
 
     public Client(String ipAddress, int port) {
         System.out.println("Establishing connection. Please wait...");
@@ -29,11 +33,20 @@ public class Client extends Thread {
 
             while (true) {
                 try {
-                    Object obj = ois.readObject();
-                    System.out.println(obj.toString());
+                    Object objReceived = ois.readObject();
+
+                    if(objReceived instanceof ArrayList) {
+                        onlineUsers = (ArrayList<User>) objReceived;
+
+                        for (User user : onlineUsers) {
+                            System.out.println(user.toString());
+                        }
+                        System.out.println("");
+                    }
 
                 } catch (IOException | ClassNotFoundException e) {
                     e.printStackTrace();
+                    System.exit(0);
                 }
             }
         }
@@ -47,5 +60,6 @@ public class Client extends Thread {
             e.printStackTrace();
         }
     }
+
 
 }
