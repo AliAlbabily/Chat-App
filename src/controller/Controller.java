@@ -12,8 +12,6 @@ public class Controller {
     ClientMainGUI clientMainGUI; // client main view
     ClientGUI clientGUI; // client connect view
 
-    private Clients localClientsObj = new Clients();
-
     public Controller() {
          clientGUI = new ClientGUI(this);
     }
@@ -22,29 +20,17 @@ public class Controller {
 
         switch (button) {
             case Connect:
-
                 String username = clientGUI.getUsername();
                 ImageIcon imageIcon = clientGUI.getImageIcon();
                 User newUser = new User(username, imageIcon); // skapar ny User-instans
 
-                Client newClient = new Client("127.0.0.1", 2343); // skapar ny Client-instans
-                newClient.sendUserToServer(newUser);
-
-                // FIXME : test
-//                User[] existingUsers = new User[5];
-//                int index = 0;
-//                for ( User key : localClientsObj.getHashMapList().keySet() ) {
-//                    existingUsers[index] = key;
-//                    index++;
-//                }
-                ///////////////
+                Client newClient = new Client("127.0.0.1", 2343, this); // skapar ny Client-instans
 
                 clientMainGUI = new ClientMainGUI(this); // öppna klient fönstret
-                // clientMainGUI.updateOnlineJList(existingUsers); // updatera onlineUsers-list in client main view
                 clientGUI.closeClientConnectionWindow();
 
+                newClient.sendUserToServer(newUser);
                 break;
-
             case Send:
 
                 // TODO : testa att skicka något till alla klienter (på global nivå)
@@ -71,5 +57,9 @@ public class Controller {
                 System.out.println("Något gick fel!");
                 break;
         }
+    }
+
+    public void updateOnlineUsersListGUI(User[] onlineUsers) {
+         clientMainGUI.updateOnlineJList(onlineUsers); // updatera onlineUsers-list in client main view
     }
 }
