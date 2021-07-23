@@ -12,12 +12,10 @@ public class Client extends Thread {
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
 
-    // TODO : skapa en lista för online användare och kontakter
-    ArrayList<User> onlineUsers = new ArrayList<>();
-    ArrayList<User> contacts = new ArrayList<>();
+    private ArrayList<User> onlineUsers = new ArrayList<>();
+    private ArrayList<User> contacts = new ArrayList<>();
 
-    // TODO : hämta controller-klassen
-    private Controller controller;
+    private final Controller controller;
 
     public Client(String ipAddress, int port, Controller controller) {
         this.controller = controller;
