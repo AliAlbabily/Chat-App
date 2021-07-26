@@ -2,45 +2,49 @@ package model;
 
 import javax.swing.*;
 import java.io.Serializable;
+import java.util.Date;
 
 public class Message implements Serializable {
-    private User user;
+    private User sender;
     private String message;
     private ImageIcon sentImage;
+    private User[] arrayOfReceivers = new User[5];
+    private Date timeReceivedByServer;
+    private Date timeReceivedByClient;
 
     public Message(User user, String message)
     {
-        this.user = user;
+        this.sender = user;
         this.message = message;
     }
 
-    public Message(User user, String message, ImageIcon sentImage)
+    public Message(User sender, String message, ImageIcon sentImage)
     {
-        this.user = user;
+        this.sender = sender;
         this.message = message;
         this.sentImage = sentImage;
     }
 
-    public Message(User user, ImageIcon sentImage)
+    public Message(User sender, ImageIcon sentImage)
     {
-        this.user = user;
+        this.sender = sender;
         this.sentImage = sentImage;
     }
 
     //<editor-fold desc="Getters and setters">
     public ImageIcon GetUserPicture()
     {
-        return user.getImageIcon();
+        return sender.getImageIcon();
     }
 
     public String GetUsername()
     {
-        return user.getUsername();
+        return sender.getUsername();
     }
 
     public User GetUser()
     {
-        return user;
+        return sender;
     }
 
     public String getMessage() {
@@ -54,7 +58,7 @@ public class Message implements Serializable {
     @Override
     public String toString() {
         if (sentImage != null) {
-            return user + " | " + message + " + attached image.";
+            return sender + " | " + message + " + attached image.";
         }
         else {
             return "textMessage: " + message + " & image: " + sentImage;
