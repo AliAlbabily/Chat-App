@@ -1,0 +1,9 @@
+
+--- Create a new Client and connect to the Server ---
+1. Click on the Connect-button on GUI
+2. Controller-class manages the call
+3. It creates a new User with along with Username and an Image
+4. Then a new Client is created
+5. Still under the same method we add the new User and Client to Clients by calling it's "put()" method
+
+--- How to send a Message to all Clients ---

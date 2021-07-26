@@ -166,6 +166,7 @@ public class ClientMainGUI extends JFrame
         contactList.setBorder(blackline);
         contactList.setFont(new Font("", Font.PLAIN,20));
 
+        // FIXME : leder till 2 handlingar vid mus klick
         contactList.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
@@ -180,6 +181,7 @@ public class ClientMainGUI extends JFrame
                 selectedUser = new User(username,imageIcon);
             }
         });
+        //
 
         onlineList = new JList(online);
         onlineList.setBounds(55, 450, 200, 250);
@@ -190,16 +192,18 @@ public class ClientMainGUI extends JFrame
         onlineList.setForeground(Color.green);
         onlineList.setFont(new Font("", Font.PLAIN,20));
 
+        // FIXME : leder till 2 handlingar vid mus klick
         onlineList.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                User selected = (User) onlineList.getSelectedValue();
+                User selected = onlineList.getSelectedValue();
                 username = selected.getUsername();
                 imageIcon = selected.getImageIcon();
 //                selectedUser = new User(username,imageIcon);
                 System.out.println(username);
             }
         });
+        //
 
         rightContactsPanel.add(lblContacts);
         rightContactsPanel.add(contactList);

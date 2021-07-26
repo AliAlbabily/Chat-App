@@ -1,7 +1,10 @@
 package model;
 
+import controller.Controller;
+
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class Client extends Thread {
 
@@ -9,7 +12,13 @@ public class Client extends Thread {
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
 
-    public Client(String ipAddress, int port) {
+    private ArrayList<User> onlineUsers = new ArrayList<>();
+    private ArrayList<User> contacts = new ArrayList<>();
+
+    private final Controller controller;
+
+    public Client(String ipAddress, int port, Controller controller) {
+        this.controller = controller;
         System.out.println("Establishing connection. Please wait...");
         try {
             socket = new Socket(ipAddress,port);
@@ -27,29 +36,29 @@ public class Client extends Thread {
         while(!Thread.interrupted()) {
             System.out.println("Running");
 
-            Buffer<Message> messagesBuffer = new Buffer<Message>();
-            // TODO : hårdkodade data, datan bör var dynamsika
-            User user = new User("Johan", null);
-            Message messageTest = new Message(user, "Hello, It's me");
-            messagesBuffer.put(messageTest);
+            while (true) {
+                try {
+                    Object objReceived = ois.readObject();
 
-            try {
-                while(true) {
-
-                    Message message = messagesBuffer.get();
-                    if(message != null) {
-                        System.out.println("Client sent: " + message.toString());
-                        oos.writeObject(message);
-                        oos.flush();
+                    if(objReceived instanceof ArrayList) {
+                        onlineUsers = (ArrayList<User>) objReceived;
+                        User[] arrayUsers = onlineUsers.toArray(new User[0]); // konvertera arraylist till vanlig array
+                        controller.updateOnlineUsersListGUI(arrayUsers);
                     }
-
-                    Message messageRecieved = (Message) ois.readObject();
-                    System.out.println("Client recieved: " + messageRecieved.toString());
-
+                } catch (IOException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                    System.exit(0);
                 }
-            }catch(IOException | InterruptedException | ClassNotFoundException e) {
-                e.printStackTrace();
             }
+        }
+    }
+
+    public void sendUserToServer(User user) {
+        try {
+            oos.writeObject(user);
+            oos.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
