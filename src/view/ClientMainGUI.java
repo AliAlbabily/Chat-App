@@ -8,21 +8,14 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.plaf.basic.BasicOptionPaneUI;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyleContext;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.HashMap;
 
 public class ClientMainGUI extends JFrame
 {
-
-    //Komponeneter
+    //Komponenter
     private Controller controller;
     private JPanel leftChatPanel;
     private JPanel rightContactsPanel;
@@ -31,13 +24,21 @@ public class ClientMainGUI extends JFrame
     private JList<Message> chatBox;
     private JList<User> contactList;
     private JList<User> onlineList;
-    private JButton sendButton;
+    private JButton addReceiverFromContactsBtn;
+    private JButton removeContactBtn;
+    private JButton addReceiverFromOnlineUsersBtn;
+    private JButton addContactBtn;
+
+    private JLabel receiversNamesLabel;
+    private JTextField messageBox; // where the text message is written
+    private JLabel insertedImageLabel;
     private JButton openFileButton;
-    private JTextField messageBox;
+    private JButton sendButton;
+    private JButton clearAllReceiversBtn;
+
     private JFileChooser fileChooser;
     private File selectedImage;
     private Font labelFont = new Font("", Font.PLAIN, 25);
-
 
     //Vald användare i kontaktlista
     private User selectedUser = null;
@@ -45,19 +46,13 @@ public class ClientMainGUI extends JFrame
     //Test users;
     User Mads = new User("Madzic", new ImageIcon("images/goat.jpg"));
     User Jagtej = new User("DeGGi", new ImageIcon("images/robot.png"));
-//    User Hanis = new User("5nis", new ImageIcon("images/tuff-guy.jpg"));
-//    User Ali = new User("Ali", new ImageIcon("images/ma-girl.jpg"));
 
     //Kontaktlista
     User[] contacts = {Mads,Jagtej};
     String[] online = {};
 
-    HashMap<String, ImageIcon> contactListHM = new HashMap<String, ImageIcon>();
-
-    Message test = new Message(Mads, "hej på dig!", new ImageIcon("images/goat.jpg"));
-    //Våra test chattlogs
-    Message[] chatLogs = {test,test,test};
-
+    Message testMessage = new Message(Mads, "hej på dig!", new ImageIcon("images/goat.jpg"));
+    Message[] chatLogs = {testMessage, testMessage, testMessage};
 
     //Variabler som gör vi kan hämta satta värden av programmet.
     private String username;
@@ -82,118 +77,110 @@ public class ClientMainGUI extends JFrame
     public void createMainFrame()
     {
         frame = new JFrame("Logged in");
-        frame.setPreferredSize(new Dimension(920, 820));
+        frame.setBounds(0, 0, 900, 820);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLayout(new BorderLayout());
+        frame.setLayout(null);
         frame.setResizable(false);
         frame.setVisible(true);
-        frame.pack();
+        frame.setLocationRelativeTo(null); // window gets placed on the middle of the screen
     }
 
     public void createLeftPanel()
     {
-        Border blackline = BorderFactory.createLineBorder(Color.black);
-
         leftChatPanel = new JPanel();
-        leftChatPanel.setPreferredSize(new Dimension(600,700));
-        leftChatPanel.setVisible(true);
-        leftChatPanel.setLayout(new BoxLayout(leftChatPanel,BoxLayout.Y_AXIS));
+        leftChatPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+        leftChatPanel.setBounds(20,20,530,450);
+        leftChatPanel.setLayout(null);
 
         //Skapar chatt label
         JLabel lblChatbox = new JLabel("Chat");
+        lblChatbox.setBounds(30,10,100,30);
         lblChatbox.setFont(labelFont);
 
         //Skapar chattbox
         chatBox = new JList<>(chatLogs);
-        chatBox.setBorder(blackline);
         chatBox.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         chatBox.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 18));
-        chatBox.setMinimumSize(new Dimension (400,600));
-        chatBox.setMaximumSize(new Dimension(400, 600));
-        //chatBox.setPreferredSize(new Dimension(450,500));
-        chatBox.setEnabled(true);
+
+        // scrollbar
+        JScrollPane scrollPane = new JScrollPane(chatBox);
+        scrollPane.setBounds(30,50,470,380);
+        scrollPane.getSize(chatBox.getPreferredScrollableViewportSize());
+
         chatBox.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 Message message = chatBox.getSelectedValue();
-               ImageIcon imageIcon = message.getSentImage();
-                if (e.getValueIsAdjusting())
+                ImageIcon imageIcon = message.getSentImage();
+                if (e.getValueIsAdjusting()) // bara en handling vid mus klick
                 {
-                    //System.out.println("Adjusting. Ignore this");
                     return;
                 }
-
-               if (imageIcon != null)
-               {
-                   JFrame frame = new JFrame();
-                   JLabel header = new JLabel("Attached image");
+                if (imageIcon != null)
+                {
+                   JFrame frame = new JFrame("Attached image");
                    JLabel label = new JLabel(imageIcon);
                    frame.add(label);
                    frame.pack();
                    frame.setVisible(true);
-               }
+                }
             }
         });
 
-        JScrollPane scrollPane = new JScrollPane(chatBox);
-        scrollPane.getSize(chatBox.getPreferredScrollableViewportSize());
         leftChatPanel.add(lblChatbox);
         leftChatPanel.add(scrollPane);
-        frame.add(leftChatPanel,BorderLayout.WEST);
-        frame.pack();
+        frame.add(leftChatPanel);
     }
 
     public void createRightPanel()
     {
         rightContactsPanel = new JPanel();
-        rightContactsPanel.setPreferredSize(new Dimension(300, 1000));
+        rightContactsPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+        rightContactsPanel.setBounds(570,20,295,740);
         rightContactsPanel.setLayout(null);
-        rightContactsPanel.setVisible(true);
 
         JLabel lblContacts = new JLabel("Contacts");
-        lblContacts.setBounds(55,30,100,50);
+        lblContacts.setBounds(30,10,100,30);
         JLabel lblOnline = new JLabel("Online users");
-        lblOnline.setBounds(55,410,250,50);
+        lblOnline.setBounds(30,410,150,30);
         lblContacts.setFont(labelFont);
         lblOnline.setFont(labelFont);
 
+        addReceiverFromContactsBtn = new JButton("Add reciever");
+        addReceiverFromContactsBtn.setBounds(30, 280, 115, 50);
+        removeContactBtn = new JButton("Remove contact");
+        removeContactBtn.setMargin(new Insets(1,1,1,1)); // changes the padding of the button
+        removeContactBtn.setBounds(150, 280, 115, 50);
+
         Border blackline = BorderFactory.createLineBorder(Color.black);
         contactList = new JList(contacts);
-        contactList.setBounds(55, 70, 200, 250);
-        contactList.setMaximumSize(new Dimension(250, 300));  // this line does not do the job
-        contactList.setMinimumSize (new Dimension (250,300));
-        contactList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        contactList.setBounds(30, 50, 235, 220);
+        contactList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); // makes sure that one list index is selected at a time
         contactList.setBorder(blackline);
         contactList.setFont(new Font("", Font.PLAIN,20));
 
-        // FIXME : leder till 2 handlingar vid mus klick
-        contactList.addListSelectionListener(new ListSelectionListener() {
+        contactList.addListSelectionListener(new ListSelectionListener() { // FIXME : leder till 2 handlingar vid mus klick
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 if (e.getValueIsAdjusting())
                 {
-                    //System.out.println("Adjusting. Ignore this");
                     return;
                 }
-                User selected = (User) contactList.getSelectedValue();
+                User selected = contactList.getSelectedValue();
                 username = selected.getUsername();
                 imageIcon = selected.getImageIcon();
                 selectedUser = new User(username,imageIcon);
             }
         });
-        //
 
         onlineList = new JList(online);
-        onlineList.setBounds(55, 450, 200, 250);
-        onlineList.setMaximumSize(new Dimension(250, 300));  // this line does not do the job
-        onlineList.setMinimumSize (new Dimension (250,300));
-        onlineList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        onlineList.setBounds(30, 450, 235, 220);
+        onlineList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); // makes sure that one list index is selected at a time
         onlineList.setBorder(blackline);
         onlineList.setForeground(Color.green);
         onlineList.setFont(new Font("", Font.PLAIN,20));
 
-        // FIXME : leder till 2 handlingar vid mus klick
-        onlineList.addListSelectionListener(new ListSelectionListener() {
+        onlineList.addListSelectionListener(new ListSelectionListener() { // FIXME : leder till 2 handlingar vid mus klick
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 User selected = onlineList.getSelectedValue();
@@ -203,25 +190,53 @@ public class ClientMainGUI extends JFrame
                 System.out.println(username);
             }
         });
-        //
+
+        addReceiverFromOnlineUsersBtn = new JButton("Add receiver");
+        addReceiverFromOnlineUsersBtn.setBounds(30, 680, 115, 50);
+        addContactBtn = new JButton("Add contact");
+        addContactBtn.setBounds(150, 680, 115, 50);
 
         rightContactsPanel.add(lblContacts);
         rightContactsPanel.add(contactList);
+        rightContactsPanel.add(addReceiverFromContactsBtn);
+        rightContactsPanel.add(removeContactBtn);
         rightContactsPanel.add(lblOnline);
         rightContactsPanel.add(onlineList);
-        frame.add(rightContactsPanel,BorderLayout.EAST);
+        rightContactsPanel.add(addReceiverFromOnlineUsersBtn);
+        rightContactsPanel.add(addContactBtn);
+        frame.add(rightContactsPanel);
     }
 
 
     public void createSouthPanel()
     {
         southPanel = new JPanel();
-        southPanel.setVisible(true);
+        southPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+        southPanel.setBounds(20, 490, 530, 270);
+        southPanel.setLayout(null);
+
+        receiversNamesLabel = new JLabel("No receivers selected..");
+        receiversNamesLabel.setBounds(30, 30, 470, 50);
+        receiversNamesLabel.setBackground(Color.lightGray);
+        receiversNamesLabel.setOpaque(true);
 
         messageBox = new JTextField();
-        sendButton = new JButton("Send");
+        messageBox.setBounds(30, 90, 470, 50);
+
+        sendButton = new JButton("Send Message");
+        sendButton.setBounds(30, 210, 325, 50);
+        clearAllReceiversBtn = new JButton("Clear receivers");
+        clearAllReceiversBtn.setMargin(new Insets(1,1,1,1)); // changes the padding of the button
+        clearAllReceiversBtn.setBounds(385, 210, 115, 50);
+
+        insertedImageLabel = new JLabel("There is not an inserted image at the moment..");
+        insertedImageLabel.setBounds(30, 150, 325, 50);
+        insertedImageLabel.setBackground(Color.lightGray);
+        insertedImageLabel.setOpaque(true);
         openFileButton = new JButton("Open file");
+        openFileButton.setBounds(385, 150, 115, 50);
         fileChooser = new JFileChooser("images");
+
         openFileButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -264,19 +279,23 @@ public class ClientMainGUI extends JFrame
                 }
             }
         });
-        messageBox.setPreferredSize(new Dimension(300,40));
-        sendButton.setPreferredSize(new Dimension(200,40));
+
         sendButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 message = messageBox.getText();
             }
         });
-        addListeners();
+
+        addListeners(); // FIXME : Maybe this method is unnecessary
+
+        southPanel.add(receiversNamesLabel);
         southPanel.add(messageBox);
-        southPanel.add(sendButton);
+        southPanel.add(insertedImageLabel);
         southPanel.add(openFileButton);
-        frame.add(southPanel,BorderLayout.SOUTH);
+        southPanel.add(sendButton);
+        southPanel.add(clearAllReceiversBtn);
+        frame.add(southPanel);
     }
 
     private void addListeners() {
@@ -296,91 +315,91 @@ public class ClientMainGUI extends JFrame
         }
         }
 
-    public void addContact(User user)
-    {
-        User[] tmpContacts = contacts;
-        int size = tmpContacts.length;
-        User[] newContacts = new User[size+1];
-        for (int i = 0;i<tmpContacts.length;i++)
-        {
-            newContacts[i] = tmpContacts[i];
-        }
-        newContacts[size+1] = user;
-    }
-
-    public User getSelectedContact()
-    {
-        return selectedUser;
-    }
-
-    public String getMessage()
-    {
-        if (messageBox.equals(""))
-        {
-            JOptionPane.showMessageDialog(null,"Du måste fylla i chatboxen för att skicka.");
-            return null;
-        }
-        return message;
-    }
-
-    public ImageIcon getImageIcon()
-    {
-        if (selectedImage == null)
-        {
-            return null;
-        }
-        else return new ImageIcon("images/"+selectedImage.getName());
-    }
-
-    public void updateChat(String newChat, User user){
-
-        Message message = new Message(user,newChat);
-        Message[] tmp = new Message[chatLogs.length+1];
-        for (int i = 0;i<chatLogs.length;i++) //Kopierar över de existerande meddelanden till en temporär array.
-        {
-            tmp[i] = chatLogs[i];
-        }
-
-        tmp[chatLogs.length] = message; //Lägger in det nya meddelandet.
-        chatLogs = new Message[tmp.length];
-        for (int j = 0; j<tmp.length;j++) //Lägger tillbaka meddelanden tillsammans med det nya skapade.
-        {
-            chatLogs[j] = tmp[j];
-        }
-    }
-
-    public void updateChat(String newChat, User user, ImageIcon image){
-        String chat = newChat;
-        Message message = new Message(user,chat,image);
-        Message[] tmp = new Message[chatLogs.length+1];
-        for (int i = 0;i<chatLogs.length;i++) //Kopierar över de existerande meddelanden till en temporär array.
-        {
-            tmp[i] = chatLogs[i];
-        }
-
-        tmp[chatLogs.length] = message; //Lägger in det nya meddelandet.
-        chatLogs = new Message[tmp.length];
-        for (int j = 0; j<tmp.length;j++) //Lägger tillbaka meddelanden tillsammans med det nya skapade.
-        {
-            chatLogs[j] = tmp[j];
-        }
-    }
-
-    public void updateChat(User user, ImageIcon image){
-        Message message = new Message(user,image);
-        Message[] tmp = new Message[chatLogs.length+1];
-        for (int i = 0;i<chatLogs.length;i++) //Kopierar över de existerande meddelanden till en temporär array.
-        {
-            tmp[i] = chatLogs[i];
-        }
-
-        tmp[chatLogs.length] = message; //Lägger in det nya meddelandet.
-        chatLogs = new Message[tmp.length];
-        for (int j = 0; j<tmp.length;j++) //Lägger tillbaka meddelanden tillsammans med det nya skapade.
-        {
-            chatLogs[j] = tmp[j];
-        }
-    }
+//    public void addContact(User user)
+//    {
+//        User[] tmpContacts = contacts;
+//        int size = tmpContacts.length;
+//        User[] newContacts = new User[size+1];
+//        for (int i = 0;i<tmpContacts.length;i++)
+//        {
+//            newContacts[i] = tmpContacts[i];
+//        }
+//        newContacts[size+1] = user;
+//    }
+//
+//    public User getSelectedContact()
+//    {
+//        return selectedUser;
+//    }
+//
+//    public String getMessage()
+//    {
+//        if (messageBox.equals(""))
+//        {
+//            JOptionPane.showMessageDialog(null,"Du måste fylla i chatboxen för att skicka.");
+//            return null;
+//        }
+//        return message;
+//    }
+//
+//    public ImageIcon getImageIcon()
+//    {
+//        if (selectedImage == null)
+//        {
+//            return null;
+//        }
+//        else return new ImageIcon("images/"+selectedImage.getName());
+//    }
+//
+//    public void updateChat(String newChat, User user){
+//
+//        Message message = new Message(user,newChat);
+//        Message[] tmp = new Message[chatLogs.length+1];
+//        for (int i = 0;i<chatLogs.length;i++) //Kopierar över de existerande meddelanden till en temporär array.
+//        {
+//            tmp[i] = chatLogs[i];
+//        }
+//
+//        tmp[chatLogs.length] = message; //Lägger in det nya meddelandet.
+//        chatLogs = new Message[tmp.length];
+//        for (int j = 0; j<tmp.length;j++) //Lägger tillbaka meddelanden tillsammans med det nya skapade.
+//        {
+//            chatLogs[j] = tmp[j];
+//        }
+//    }
+//
+//    public void updateChat(String newChat, User user, ImageIcon image){
+//        String chat = newChat;
+//        Message message = new Message(user,chat,image);
+//        Message[] tmp = new Message[chatLogs.length+1];
+//        for (int i = 0;i<chatLogs.length;i++) //Kopierar över de existerande meddelanden till en temporär array.
+//        {
+//            tmp[i] = chatLogs[i];
+//        }
+//
+//        tmp[chatLogs.length] = message; //Lägger in det nya meddelandet.
+//        chatLogs = new Message[tmp.length];
+//        for (int j = 0; j<tmp.length;j++) //Lägger tillbaka meddelanden tillsammans med det nya skapade.
+//        {
+//            chatLogs[j] = tmp[j];
+//        }
+//    }
+//
+//    public void updateChat(User user, ImageIcon image){
+//        Message message = new Message(user,image);
+//        Message[] tmp = new Message[chatLogs.length+1];
+//        for (int i = 0;i<chatLogs.length;i++) //Kopierar över de existerande meddelanden till en temporär array.
+//        {
+//            tmp[i] = chatLogs[i];
+//        }
+//
+//        tmp[chatLogs.length] = message; //Lägger in det nya meddelandet.
+//        chatLogs = new Message[tmp.length];
+//        for (int j = 0; j<tmp.length;j++) //Lägger tillbaka meddelanden tillsammans med det nya skapade.
+//        {
+//            chatLogs[j] = tmp[j];
+//        }
+//    }
 
     public void updateOnlineJList(User[] onlineUsers) {
         onlineList.removeAll();
