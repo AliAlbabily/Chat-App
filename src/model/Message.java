@@ -58,10 +58,10 @@ public class Message implements Serializable {
     @Override
     public String toString() {
         if (sentImage != null) {
-            return sender + " | " + message + " + attached image.";
+            return sender + ": " + message + " (attached image)";
         }
         else {
-            return "textMessage: " + message + " & image: " + sentImage;
+            return sender+": " + message;
         }
     }
 

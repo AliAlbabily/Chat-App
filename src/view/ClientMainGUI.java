@@ -44,15 +44,17 @@ public class ClientMainGUI extends JFrame
     private User selectedUser = null;
 
     //Test users;
-    User Mads = new User("Madzic", new ImageIcon("images/goat.jpg"));
-    User Jagtej = new User("DeGGi", new ImageIcon("images/robot.png"));
+    User Mads = new User("Mads", new ImageIcon("images/goat.jpg"));
+    User Jagtej = new User("Jagtej", new ImageIcon("images/robot.png"));
 
     //Kontaktlista
     User[] contacts = {Mads,Jagtej};
     String[] online = {};
 
     Message testMessage = new Message(Mads, "hej på dig!", new ImageIcon("images/goat.jpg"));
-    Message[] chatLogs = {testMessage, testMessage, testMessage};
+    Message testMessage2 = new Message(Jagtej, "Tjo snygging!!");
+
+    Message[] chatLogs = {testMessage, testMessage2};
 
     //Variabler som gör vi kan hämta satta värden av programmet.
     private String username;
