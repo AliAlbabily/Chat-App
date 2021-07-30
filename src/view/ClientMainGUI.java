@@ -28,7 +28,6 @@ public class ClientMainGUI extends JFrame
     private JButton removeContactBtn;
     private JButton addReceiverFromOnlineUsersBtn;
     private JButton addContactBtn;
-
     private JLabel receiversNamesLabel;
     private JTextField messageBox; // where the text message is written
     private JLabel insertedImageLabel;
@@ -51,7 +50,7 @@ public class ClientMainGUI extends JFrame
     User[] contacts = {Mads,Jagtej};
     String[] online = {};
 
-    Message testMessage = new Message(Mads, "hej på dig!", new ImageIcon("images/goat.jpg"));
+    Message testMessage = new Message(Mads, "hej på dig!", new ImageIcon("images/goat.jpg"), null);
     Message testMessage2 = new Message(Jagtej, "Tjo snygging!!");
 
     Message[] chatLogs = {testMessage, testMessage2};
@@ -285,12 +284,11 @@ public class ClientMainGUI extends JFrame
         sendButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                message = messageBox.getText();
-
                 if (e.getSource()==sendButton)
                 {
-                    controller.buttonPressed(ButtonType.Send);
+                    message = messageBox.getText();
                     selectedImage = null;
+                    controller.buttonPressed(ButtonType.Send);
                 }
             }
         });
@@ -320,17 +318,17 @@ public class ClientMainGUI extends JFrame
 //    {
 //        return selectedUser;
 //    }
-//
-//    public String getMessage()
-//    {
-//        if (messageBox.equals(""))
-//        {
-//            JOptionPane.showMessageDialog(null,"Du måste fylla i chatboxen för att skicka.");
-//            return null;
-//        }
-//        return message;
-//    }
-//
+
+    public String getMessage()
+    {
+        if (messageBox.getText().equals(""))
+        {
+            JOptionPane.showMessageDialog(null,"The chat chatbox is empty, right something before u send a message!");
+            return null;
+        }
+        return message;
+    }
+
 //    public ImageIcon getImageIcon()
 //    {
 //        if (selectedImage == null)

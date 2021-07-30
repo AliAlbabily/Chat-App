@@ -9,8 +9,10 @@ import javax.swing.*;
 
 public class Controller {
 
-    ClientMainGUI clientMainGUI; // client main view
-    ClientGUI clientGUI; // client connect view
+    private ClientMainGUI clientMainGUI; // client main view
+    private final ClientGUI clientGUI; // client connect view
+    private User user;
+    private Client client;
 
     public Controller() {
          clientGUI = new ClientGUI(this);
@@ -22,22 +24,31 @@ public class Controller {
             case Connect:
                 String username = clientGUI.getUsername();
                 ImageIcon imageIcon = clientGUI.getImageIcon();
-                User newUser = new User(username, imageIcon); // skapar ny User-instans
+                user = new User(username, imageIcon); // skapar ny User-instans
 
-                Client newClient = new Client("127.0.0.1", 2343, this); // skapar ny Client-instans
+                client = new Client("127.0.0.1", 2343, this); // skapar ny Client-instans
 
                 clientMainGUI = new ClientMainGUI(this); // öppna klient fönstret
                 clientGUI.closeClientConnectionWindow();
 
-                newClient.sendUserToServer(newUser);
+                client.sendUserToServer(user);
                 break;
             case Send:
 
-                // TODO : testa att skicka något till alla klienter (på global nivå)
-                //Anrop till chatthämtning
-//                String message = clientMainGUI.getMessage();
-//                ImageIcon Image = clientMainGUI.getImageIcon();
-//
+                String textMessage = clientMainGUI.getMessage();
+                User[] allOnlineUsers = client.getAllOnlineUsers(); // TODO: just nu får man alla onlineUsers (alltså inte de som man väler)!!
+                //ImageIcon Image = clientMainGUI.getImageIcon();
+
+                for(User user : allOnlineUsers) {
+                    System.out.println(user.toString());
+                }
+                System.out.println("--------");
+
+                Message testMessage = new Message(user, textMessage, null, allOnlineUsers); // create a new Message-object
+                //System.out.println(testMessage.toString());
+
+                // .... // TODO : avänd klienten för att skicka ett meddelande över till servern
+
 //                if (message == null || Image == null) {
 //                    JOptionPane.showMessageDialog(null,"Du måste skriva något för att skicka.");
 //                    break;
@@ -51,7 +62,6 @@ public class Controller {
 //                else if (Image != null && message == null) {
 //                    clientMainGUI.updateChat(user, Image);
 //                }
-
                 break;
             default:
                 System.out.println("Något gick fel!");

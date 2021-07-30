@@ -18,11 +18,12 @@ public class Message implements Serializable {
         this.message = message;
     }
 
-    public Message(User sender, String message, ImageIcon sentImage)
+    public Message(User sender, String message, ImageIcon sentImage, User[] arrayOfReceivers)
     {
         this.sender = sender;
         this.message = message;
         this.sentImage = sentImage;
+        this.arrayOfReceivers = arrayOfReceivers;
     }
 
     public Message(User sender, ImageIcon sentImage)

@@ -61,4 +61,8 @@ public class Client extends Thread {
             e.printStackTrace();
         }
     }
+
+    public User[] getAllOnlineUsers() {
+        return onlineUsers.toArray(new User[0]);
+    }
 }
