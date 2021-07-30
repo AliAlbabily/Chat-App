@@ -286,10 +286,14 @@ public class ClientMainGUI extends JFrame
             @Override
             public void actionPerformed(ActionEvent e) {
                 message = messageBox.getText();
+
+                if (e.getSource()==sendButton)
+                {
+                    controller.buttonPressed(ButtonType.Send);
+                    selectedImage = null;
+                }
             }
         });
-
-        addListeners(); // FIXME : Maybe this method is unnecessary
 
         southPanel.add(receiversNamesLabel);
         southPanel.add(messageBox);
@@ -299,23 +303,6 @@ public class ClientMainGUI extends JFrame
         southPanel.add(clearAllReceiversBtn);
         frame.add(southPanel);
     }
-
-    private void addListeners() {
-        ActionListener listener = new ButtonActionListeners();
-        sendButton.addActionListener(listener);
-    }
-
-    class ButtonActionListeners implements ActionListener
-    {
-        public void actionPerformed(ActionEvent e)
-        {
-            if (e.getSource()==sendButton)
-            {
-                controller.buttonPressed(ButtonType.Send);
-                selectedImage = null;
-            }
-        }
-        }
 
 //    public void addContact(User user)
 //    {
