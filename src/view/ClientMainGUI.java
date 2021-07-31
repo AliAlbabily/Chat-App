@@ -337,24 +337,25 @@ public class ClientMainGUI extends JFrame
 //        }
 //        else return new ImageIcon("images/"+selectedImage.getName());
 //    }
-//
-//    public void updateChat(String newChat, User user){
-//
-//        Message message = new Message(user,newChat);
-//        Message[] tmp = new Message[chatLogs.length+1];
-//        for (int i = 0;i<chatLogs.length;i++) //Kopierar över de existerande meddelanden till en temporär array.
-//        {
-//            tmp[i] = chatLogs[i];
-//        }
-//
-//        tmp[chatLogs.length] = message; //Lägger in det nya meddelandet.
-//        chatLogs = new Message[tmp.length];
-//        for (int j = 0; j<tmp.length;j++) //Lägger tillbaka meddelanden tillsammans med det nya skapade.
-//        {
-//            chatLogs[j] = tmp[j];
-//        }
-//    }
-//
+
+    public void updateChat(String newChat, User user){
+        Message message = new Message(user,newChat);
+        Message[] tmp = new Message[chatLogs.length+1];
+        for (int i = 0;i<chatLogs.length;i++) //Kopierar över de existerande meddelanden till en temporär array.
+        {
+            tmp[i] = chatLogs[i];
+        }
+
+        tmp[chatLogs.length] = message; //Lägger in det nya meddelandet.
+        chatLogs = new Message[tmp.length];
+        for (int j = 0; j<tmp.length;j++) //Lägger tillbaka meddelanden tillsammans med det nya skapade.
+        {
+            chatLogs[j] = tmp[j];
+        }
+
+        chatBox.setListData(chatLogs); // update the gui componenet
+    }
+
 //    public void updateChat(String newChat, User user, ImageIcon image){
 //        String chat = newChat;
 //        Message message = new Message(user,chat,image);
@@ -392,9 +393,5 @@ public class ClientMainGUI extends JFrame
         onlineList.removeAll();
         onlineList.setListData(onlineUsers);
     }
-
-//    public void addNewOnlineUser(User user) {
-//
-//    }
 }
 

@@ -39,15 +39,13 @@ public class Controller {
                 User[] allOnlineUsers = client.getAllOnlineUsers(); // TODO: just nu får man alla onlineUsers (alltså inte de som man väler)!!
                 //ImageIcon Image = clientMainGUI.getImageIcon();
 
-                for(User user : allOnlineUsers) {
-                    System.out.println(user.toString());
-                }
-                System.out.println("--------");
+                Message newMessage = new Message(user, textMessage, null, allOnlineUsers); // create a new Message-object
+                client.sendMessageToServer(newMessage);
 
-                Message testMessage = new Message(user, textMessage, null, allOnlineUsers); // create a new Message-object
-                //System.out.println(testMessage.toString());
 
-                // .... // TODO : avänd klienten för att skicka ett meddelande över till servern
+
+
+
 
 //                if (message == null || Image == null) {
 //                    JOptionPane.showMessageDialog(null,"Du måste skriva något för att skicka.");
@@ -62,6 +60,7 @@ public class Controller {
 //                else if (Image != null && message == null) {
 //                    clientMainGUI.updateChat(user, Image);
 //                }
+
                 break;
             default:
                 System.out.println("Något gick fel!");
@@ -71,5 +70,9 @@ public class Controller {
 
     public void updateOnlineUsersListGUI(User[] onlineUsers) {
          clientMainGUI.updateOnlineJList(onlineUsers); // updatera onlineUsers-list in client main view
+    }
+
+    public void updateChatGUI(Message message) {
+        clientMainGUI.updateChat(message.getMessage(), message.GetUser());
     }
 }

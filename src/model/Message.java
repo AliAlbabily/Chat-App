@@ -56,6 +56,10 @@ public class Message implements Serializable {
         return sentImage;
     }
 
+    public User[] getArrayOfReceivers() {
+        return arrayOfReceivers;
+    }
+
     @Override
     public String toString() {
         if (sentImage != null) {

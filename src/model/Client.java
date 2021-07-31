@@ -45,6 +45,12 @@ public class Client extends Thread {
                         User[] arrayUsers = onlineUsers.toArray(new User[0]); // konvertera arraylist till vanlig array
                         controller.updateOnlineUsersListGUI(arrayUsers);
                     }
+                    else if(objReceived instanceof Message) {
+                        Message messageReceived = (Message)objReceived;
+                        System.out.println(messageReceived.GetUser().toString() + ": " + messageReceived.getMessage());
+                        controller.updateChatGUI(messageReceived);
+                    }
+
                 } catch (IOException | ClassNotFoundException e) {
                     e.printStackTrace();
                     System.exit(0);
@@ -64,5 +70,14 @@ public class Client extends Thread {
 
     public User[] getAllOnlineUsers() {
         return onlineUsers.toArray(new User[0]);
+    }
+
+    public void sendMessageToServer(Message message) {
+        try {
+            oos.writeObject(message);
+            oos.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
