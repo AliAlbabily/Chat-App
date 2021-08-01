@@ -39,6 +39,8 @@ public class ClientMainGUI extends JFrame
     private File selectedImage;
     private Font labelFont = new Font("", Font.PLAIN, 25);
 
+    private ImageIcon uploadedImage = null;
+
     //Vald användare i kontaktlista
     private User selectedUser = null;
 
@@ -247,10 +249,10 @@ public class ClientMainGUI extends JFrame
                    if (returnVal == JFileChooser.APPROVE_OPTION)
                    {
                        selectedImage = fileChooser.getSelectedFile();
-                       System.out.println("images/"+selectedImage.getName());
-                       ImageIcon imageIcon = new ImageIcon(String.valueOf((selectedImage)));
+                       insertedImageLabel.setText(selectedImage.getName());
+                       uploadedImage = new ImageIcon(String.valueOf((selectedImage)));
                        JFrame frame = new JFrame();
-                       JLabel label = new JLabel(imageIcon);
+                       JLabel label = new JLabel(uploadedImage);
                        label.setVisible(true);
                        label.setPreferredSize(new Dimension(100,100));
                        frame.add(label);
@@ -262,24 +264,24 @@ public class ClientMainGUI extends JFrame
             }
         });
 
-        fileChooser.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (e.getSource() == openFileButton)
-                {
-                    int returnVal = fileChooser.showOpenDialog(ClientMainGUI.this);
-                    if (returnVal == JFileChooser.APPROVE_OPTION)
-                    {
-                        File file = fileChooser.getSelectedFile();
-                        ImageIcon imageIcon = new ImageIcon(("images/"+file));
-                        JFrame frame = new JFrame();
-                        JLabel label = new JLabel(imageIcon);
-                        frame.add(label);
-                        frame.setVisible(true);
-                    }
-                }
-            }
-        });
+//        fileChooser.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                if (e.getSource() == openFileButton)
+//                {
+//                    int returnVal = fileChooser.showOpenDialog(ClientMainGUI.this);
+//                    if (returnVal == JFileChooser.APPROVE_OPTION)
+//                    {
+//                        File file = fileChooser.getSelectedFile();
+//                        ImageIcon imageIcon = new ImageIcon(("images/"+file));
+//                        JFrame frame = new JFrame();
+//                        JLabel label = new JLabel(imageIcon);
+//                        frame.add(label);
+//                        frame.setVisible(true);
+//                    }
+//                }
+//            }
+//        });
 
         sendButton.addActionListener(new ActionListener() {
             @Override
@@ -321,24 +323,14 @@ public class ClientMainGUI extends JFrame
 
     public String getMessage()
     {
-        if (messageBox.getText().equals(""))
-        {
-            JOptionPane.showMessageDialog(null,"The chat chatbox is empty, right something before u send a message!");
-            return null;
-        }
         return message;
     }
 
-//    public ImageIcon getImageIcon()
-//    {
-//        if (selectedImage == null)
-//        {
-//            return null;
-//        }
-//        else return new ImageIcon("images/"+selectedImage.getName());
-//    }
+    public ImageIcon getUploadedImage() {
+        return uploadedImage;
+    }
 
-    public void updateChat(String newChat, User user){
+    public void updateChat(User user, String newChat){
         Message message = new Message(user,newChat);
         Message[] tmp = new Message[chatLogs.length+1];
         for (int i = 0;i<chatLogs.length;i++) //Kopierar över de existerande meddelanden till en temporär array.
@@ -356,38 +348,42 @@ public class ClientMainGUI extends JFrame
         chatBox.setListData(chatLogs); // update the gui componenet
     }
 
-//    public void updateChat(String newChat, User user, ImageIcon image){
-//        String chat = newChat;
-//        Message message = new Message(user,chat,image);
-//        Message[] tmp = new Message[chatLogs.length+1];
-//        for (int i = 0;i<chatLogs.length;i++) //Kopierar över de existerande meddelanden till en temporär array.
-//        {
-//            tmp[i] = chatLogs[i];
-//        }
-//
-//        tmp[chatLogs.length] = message; //Lägger in det nya meddelandet.
-//        chatLogs = new Message[tmp.length];
-//        for (int j = 0; j<tmp.length;j++) //Lägger tillbaka meddelanden tillsammans med det nya skapade.
-//        {
-//            chatLogs[j] = tmp[j];
-//        }
-//    }
-//
-//    public void updateChat(User user, ImageIcon image){
-//        Message message = new Message(user,image);
-//        Message[] tmp = new Message[chatLogs.length+1];
-//        for (int i = 0;i<chatLogs.length;i++) //Kopierar över de existerande meddelanden till en temporär array.
-//        {
-//            tmp[i] = chatLogs[i];
-//        }
-//
-//        tmp[chatLogs.length] = message; //Lägger in det nya meddelandet.
-//        chatLogs = new Message[tmp.length];
-//        for (int j = 0; j<tmp.length;j++) //Lägger tillbaka meddelanden tillsammans med det nya skapade.
-//        {
-//            chatLogs[j] = tmp[j];
-//        }
-//    }
+    public void updateChat(User user, String newChat, ImageIcon image){
+        String chat = newChat;
+        Message message = new Message(user, chat, image);
+        Message[] tmp = new Message[chatLogs.length+1];
+        for (int i = 0;i<chatLogs.length;i++) //Kopierar över de existerande meddelanden till en temporär array.
+        {
+            tmp[i] = chatLogs[i];
+        }
+
+        tmp[chatLogs.length] = message; //Lägger in det nya meddelandet.
+        chatLogs = new Message[tmp.length];
+        for (int j = 0; j<tmp.length;j++) //Lägger tillbaka meddelanden tillsammans med det nya skapade.
+        {
+            chatLogs[j] = tmp[j];
+        }
+
+        chatBox.setListData(chatLogs); // update the gui componenet
+    }
+
+    public void updateChat(User user, ImageIcon image){
+        Message message = new Message(user, image);
+        Message[] tmp = new Message[chatLogs.length+1];
+        for (int i = 0;i<chatLogs.length;i++) //Kopierar över de existerande meddelanden till en temporär array.
+        {
+            tmp[i] = chatLogs[i];
+        }
+
+        tmp[chatLogs.length] = message; //Lägger in det nya meddelandet.
+        chatLogs = new Message[tmp.length];
+        for (int j = 0; j<tmp.length;j++) //Lägger tillbaka meddelanden tillsammans med det nya skapade.
+        {
+            chatLogs[j] = tmp[j];
+        }
+
+        chatBox.setListData(chatLogs); // update the gui componenet
+    }
 
     public void updateOnlineJList(User[] onlineUsers) {
         onlineList.removeAll();

@@ -48,7 +48,8 @@ public class Client extends Thread {
                     else if(objReceived instanceof Message) {
                         Message messageReceived = (Message)objReceived;
                         System.out.println(messageReceived.GetUser().toString() + ": " + messageReceived.getMessage());
-                        controller.updateChatGUI(messageReceived);
+
+                        checkMessage(messageReceived);
                     }
 
                 } catch (IOException | ClassNotFoundException e) {
@@ -78,6 +79,23 @@ public class Client extends Thread {
             oos.flush();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void checkMessage(Message message) {
+
+        if (message.getMessage().equals("") && message.getSentImage() == null) { // no text && no image
+            // JOptionPane.showMessageDialog(null,"Du måste skriva något för att skicka.");
+            System.out.println("You can't send an empty message!");
+        }
+        else if (!message.getMessage().equals("") && message.getSentImage() != null) { // text exists && image exists
+            controller.updateChatGUI(message.GetUser(), message.getMessage(), message.getSentImage());
+        }
+        else if (!message.getMessage().equals("") && message.getSentImage() == null) { // text exists && no image
+            controller.updateChatGUI(message.GetUser(), message.getMessage());
+        }
+        else if (message.getMessage().equals("") && message.getSentImage() != null) { // no text && image exists
+            controller.updateChatGUI(message.GetUser(), message.getSentImage());
         }
     }
 }

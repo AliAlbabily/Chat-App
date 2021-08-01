@@ -34,33 +34,12 @@ public class Controller {
                 client.sendUserToServer(user);
                 break;
             case Send:
-
                 String textMessage = clientMainGUI.getMessage();
                 User[] allOnlineUsers = client.getAllOnlineUsers(); // TODO: just nu får man alla onlineUsers (alltså inte de som man väler)!!
-                //ImageIcon Image = clientMainGUI.getImageIcon();
+                ImageIcon uploadedImage = clientMainGUI.getUploadedImage();
 
-                Message newMessage = new Message(user, textMessage, null, allOnlineUsers); // create a new Message-object
+                Message newMessage = new Message(user, textMessage, uploadedImage, allOnlineUsers); // create a new Message-object
                 client.sendMessageToServer(newMessage);
-
-
-
-
-
-
-//                if (message == null || Image == null) {
-//                    JOptionPane.showMessageDialog(null,"Du måste skriva något för att skicka.");
-//                    break;
-//                }
-//                if (Image == null && message != null) {
-//                    clientMainGUI.updateChat(message,user);
-//                }
-//                else if (Image != null && message != null) {
-//                    clientMainGUI.updateChat(message,user,Image);
-//                }
-//                else if (Image != null && message == null) {
-//                    clientMainGUI.updateChat(user, Image);
-//                }
-
                 break;
             default:
                 System.out.println("Något gick fel!");
@@ -69,10 +48,18 @@ public class Controller {
     }
 
     public void updateOnlineUsersListGUI(User[] onlineUsers) {
-         clientMainGUI.updateOnlineJList(onlineUsers); // updatera onlineUsers-list in client main view
+        clientMainGUI.updateOnlineJList(onlineUsers); // updatera onlineUsers-list in client main view
     }
 
-    public void updateChatGUI(Message message) {
-        clientMainGUI.updateChat(message.getMessage(), message.GetUser());
+    public void updateChatGUI(User user, String message) {
+        clientMainGUI.updateChat(user, message);
+    }
+
+    public void updateChatGUI(User user, String textMessage, ImageIcon Image) {
+        clientMainGUI.updateChat(user, textMessage, Image);
+    }
+
+    public void updateChatGUI(User user, ImageIcon Image) {
+        clientMainGUI.updateChat(user, Image);
     }
 }
