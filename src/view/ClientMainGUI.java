@@ -12,6 +12,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.ArrayList;
 
 public class ClientMainGUI extends JFrame
 {
@@ -36,12 +37,10 @@ public class ClientMainGUI extends JFrame
     private JButton clearAllReceiversBtn;
 
     private JFileChooser fileChooser;
-//    private File selectedImage;
     private Font labelFont = new Font("", Font.PLAIN, 25);
     private ImageIcon uploadedImage = null;
 
-    //Vald användare i kontaktlista
-    private User selectedUser = null;
+    private ArrayList<User> selectedUsers = new ArrayList<>();
 
     //Test users;
     User Mads = new User("Mads", new ImageIcon("images/goat.jpg"));
@@ -54,15 +53,13 @@ public class ClientMainGUI extends JFrame
     Message[] chatLogs = {};
 
     //Variabler som gör vi kan hämta satta värden av programmet.
-    private String username;
-    private ImageIcon imageIcon;
     private String message;
-
 
     public ClientMainGUI(Controller controller)
     {
         this.controller = controller;
         InitializePanels();
+        addListeners();
     }
 
     public void InitializePanels()
@@ -159,19 +156,19 @@ public class ClientMainGUI extends JFrame
         contactList.setBorder(blackline);
         contactList.setFont(new Font("", Font.PLAIN,20));
 
-        contactList.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                if (e.getValueIsAdjusting()) // bara en handling vid mus klick
-                {
-                    return;
-                }
-                User selected = contactList.getSelectedValue();
-                username = selected.getUsername();
-                imageIcon = selected.getImageIcon();
-                selectedUser = new User(username,imageIcon);
-            }
-        });
+//        contactList.addListSelectionListener(new ListSelectionListener() {
+//            @Override
+//            public void valueChanged(ListSelectionEvent e) {
+//                if (e.getValueIsAdjusting()) // bara en handling vid mus klick
+//                {
+//                    return;
+//                }
+//                User selected = contactList.getSelectedValue();
+//                username = selected.getUsername();
+//                imageIcon = selected.getImageIcon();
+//                selectedUser = new User(username,imageIcon);
+//            }
+//        });
 
         onlineList = new JList(online);
         onlineList.setBounds(30, 450, 235, 220);
@@ -179,22 +176,6 @@ public class ClientMainGUI extends JFrame
         onlineList.setBorder(blackline);
         onlineList.setForeground(Color.green);
         onlineList.setFont(new Font("", Font.PLAIN,20));
-
-        onlineList.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                if (e.getValueIsAdjusting()) // bara en handling vid mus klick
-                {
-                    return;
-                }
-
-                User selected = onlineList.getSelectedValue();
-                username = selected.getUsername();
-                imageIcon = selected.getImageIcon();
-//                selectedUser = new User(username,imageIcon);
-                System.out.println(username);
-            }
-        });
 
         addReceiverFromOnlineUsersBtn = new JButton("Add receiver");
         addReceiverFromOnlineUsersBtn.setBounds(30, 680, 115, 50);
@@ -297,11 +278,6 @@ public class ClientMainGUI extends JFrame
 //        }
 //        newContacts[size+1] = user;
 //    }
-//
-//    public User getSelectedContact()
-//    {
-//        return selectedUser;
-//    }
 
     public String getMessage()
     {
@@ -310,6 +286,10 @@ public class ClientMainGUI extends JFrame
 
     public ImageIcon getUploadedImage() {
         return uploadedImage;
+    }
+
+    public ArrayList<User> getSelectedUsers() {
+        return selectedUsers;
     }
 
     public void updateChat(User user, String newChat){
@@ -370,6 +350,22 @@ public class ClientMainGUI extends JFrame
     public void updateOnlineJList(User[] onlineUsers) {
         onlineList.removeAll();
         onlineList.setListData(onlineUsers);
+    }
+
+    private void addListeners() {
+        addReceiverFromOnlineUsersBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                selectedUsers.add(onlineList.getSelectedValue()); // save the selected user in a list
+            }
+        });
+
+        addReceiverFromContactsBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("test 2");
+            }
+        });
     }
 }
 

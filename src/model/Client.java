@@ -69,10 +69,6 @@ public class Client extends Thread {
         }
     }
 
-    public User[] getAllOnlineUsers() {
-        return onlineUsers.toArray(new User[0]);
-    }
-
     public void sendMessageToServer(Message message) {
         try {
             oos.writeObject(message);

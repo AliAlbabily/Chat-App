@@ -35,7 +35,7 @@ public class Controller {
                 break;
             case Send:
                 String textMessage = clientMainGUI.getMessage();
-                User[] allOnlineUsers = client.getAllOnlineUsers(); // TODO: just nu får man alla onlineUsers (alltså inte de som man väler)!!
+                User[] allOnlineUsers = clientMainGUI.getSelectedUsers().toArray(new User[0]);
                 ImageIcon uploadedImage = clientMainGUI.getUploadedImage();
 
                 Message newMessage = new Message(user, textMessage, uploadedImage, allOnlineUsers); // create a new Message-object
