@@ -36,9 +36,8 @@ public class ClientMainGUI extends JFrame
     private JButton clearAllReceiversBtn;
 
     private JFileChooser fileChooser;
-    private File selectedImage;
+//    private File selectedImage;
     private Font labelFont = new Font("", Font.PLAIN, 25);
-
     private ImageIcon uploadedImage = null;
 
     //Vald användare i kontaktlista
@@ -52,10 +51,7 @@ public class ClientMainGUI extends JFrame
     User[] contacts = {Mads,Jagtej};
     String[] online = {};
 
-    Message testMessage = new Message(Mads, "hej på dig!", new ImageIcon("images/goat.jpg"), null);
-    Message testMessage2 = new Message(Jagtej, "Tjo snygging!!");
-
-    Message[] chatLogs = {testMessage, testMessage2};
+    Message[] chatLogs = {};
 
     //Variabler som gör vi kan hämta satta värden av programmet.
     private String username;
@@ -114,10 +110,11 @@ public class ClientMainGUI extends JFrame
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 Message message = chatBox.getSelectedValue();
-                ImageIcon imageIcon = message.getSentImage();
+                ImageIcon imageIcon = null;
+
                 if (e.getValueIsAdjusting()) // bara en handling vid mus klick
                 {
-                    return;
+                    imageIcon = message.getSentImage();
                 }
                 if (imageIcon != null)
                 {
@@ -162,10 +159,10 @@ public class ClientMainGUI extends JFrame
         contactList.setBorder(blackline);
         contactList.setFont(new Font("", Font.PLAIN,20));
 
-        contactList.addListSelectionListener(new ListSelectionListener() { // FIXME : leder till 2 handlingar vid mus klick
+        contactList.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                if (e.getValueIsAdjusting())
+                if (e.getValueIsAdjusting()) // bara en handling vid mus klick
                 {
                     return;
                 }
@@ -183,9 +180,14 @@ public class ClientMainGUI extends JFrame
         onlineList.setForeground(Color.green);
         onlineList.setFont(new Font("", Font.PLAIN,20));
 
-        onlineList.addListSelectionListener(new ListSelectionListener() { // FIXME : leder till 2 handlingar vid mus klick
+        onlineList.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
+                if (e.getValueIsAdjusting()) // bara en handling vid mus klick
+                {
+                    return;
+                }
+
                 User selected = onlineList.getSelectedValue();
                 username = selected.getUsername();
                 imageIcon = selected.getImageIcon();
@@ -248,40 +250,20 @@ public class ClientMainGUI extends JFrame
                    int returnVal = fileChooser.showOpenDialog(ClientMainGUI.this);
                    if (returnVal == JFileChooser.APPROVE_OPTION)
                    {
-                       selectedImage = fileChooser.getSelectedFile();
+                       File selectedImage = fileChooser.getSelectedFile();
                        insertedImageLabel.setText(selectedImage.getName());
                        uploadedImage = new ImageIcon(String.valueOf((selectedImage)));
-                       JFrame frame = new JFrame();
-                       JLabel label = new JLabel(uploadedImage);
-                       label.setVisible(true);
-                       label.setPreferredSize(new Dimension(100,100));
-                       frame.add(label);
-                       frame.pack();
-                       frame.setVisible(true);
-                       frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+//                       JFrame frame = new JFrame();
+//                       JLabel label = new JLabel(uploadedImage);
+//                       label.setVisible(true);
+//                       frame.add(label);
+//                       frame.pack();
+//                       frame.setVisible(true);
                    }
                }
             }
         });
-
-//        fileChooser.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                if (e.getSource() == openFileButton)
-//                {
-//                    int returnVal = fileChooser.showOpenDialog(ClientMainGUI.this);
-//                    if (returnVal == JFileChooser.APPROVE_OPTION)
-//                    {
-//                        File file = fileChooser.getSelectedFile();
-//                        ImageIcon imageIcon = new ImageIcon(("images/"+file));
-//                        JFrame frame = new JFrame();
-//                        JLabel label = new JLabel(imageIcon);
-//                        frame.add(label);
-//                        frame.setVisible(true);
-//                    }
-//                }
-//            }
-//        });
 
         sendButton.addActionListener(new ActionListener() {
             @Override
@@ -289,8 +271,8 @@ public class ClientMainGUI extends JFrame
                 if (e.getSource()==sendButton)
                 {
                     message = messageBox.getText();
-                    selectedImage = null;
                     controller.buttonPressed(ButtonType.Send);
+                    uploadedImage = null;
                 }
             }
         });
