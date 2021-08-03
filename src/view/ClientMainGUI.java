@@ -352,11 +352,24 @@ public class ClientMainGUI extends JFrame
         onlineList.setListData(onlineUsers);
     }
 
+    private void updateReceiversLabel() {
+        User[] selectedUsersArr = selectedUsers.toArray(new User[0]);
+        String selectedUsersStr = "Receivers: ";
+
+        if(!selectedUsers.isEmpty()) { // when the list is not empty
+            for (User user : selectedUsersArr) {
+                selectedUsersStr = selectedUsersStr + user.toString() + " / ";
+                receiversNamesLabel.setText(selectedUsersStr);
+            }
+        } else { receiversNamesLabel.setText("Receivers: "); }
+    }
+
     private void addListeners() {
         addReceiverFromOnlineUsersBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 selectedUsers.add(onlineList.getSelectedValue()); // save the selected user in a list
+                updateReceiversLabel();
             }
         });
 
@@ -364,6 +377,14 @@ public class ClientMainGUI extends JFrame
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("test 2");
+            }
+        });
+
+        clearAllReceiversBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                selectedUsers.clear(); // remove all selected users inside the list
+                updateReceiversLabel();
             }
         });
     }
