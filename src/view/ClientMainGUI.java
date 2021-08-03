@@ -115,11 +115,12 @@ public class ClientMainGUI extends JFrame
                 }
                 if (imageIcon != null)
                 {
-                   JFrame frame = new JFrame("Attached image");
-                   JLabel label = new JLabel(imageIcon);
-                   frame.add(label);
-                   frame.pack();
-                   frame.setVisible(true);
+                    JFrame frame = new JFrame("Attached image");
+                    JLabel label = new JLabel(imageIcon);
+                    frame.add(label);
+                    frame.pack();
+                    frame.setVisible(true);
+                    frame.setLocationRelativeTo(null); // window gets placed on the middle of the screen
                 }
             }
         });
