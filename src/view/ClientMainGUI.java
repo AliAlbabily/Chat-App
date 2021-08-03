@@ -156,20 +156,6 @@ public class ClientMainGUI extends JFrame
         contactList.setBorder(blackline);
         contactList.setFont(new Font("", Font.PLAIN,20));
 
-//        contactList.addListSelectionListener(new ListSelectionListener() {
-//            @Override
-//            public void valueChanged(ListSelectionEvent e) {
-//                if (e.getValueIsAdjusting()) // bara en handling vid mus klick
-//                {
-//                    return;
-//                }
-//                User selected = contactList.getSelectedValue();
-//                username = selected.getUsername();
-//                imageIcon = selected.getImageIcon();
-//                selectedUser = new User(username,imageIcon);
-//            }
-//        });
-
         onlineList = new JList(online);
         onlineList.setBounds(30, 450, 235, 220);
         onlineList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); // makes sure that one list index is selected at a time
@@ -192,7 +178,6 @@ public class ClientMainGUI extends JFrame
         rightContactsPanel.add(addContactBtn);
         frame.add(rightContactsPanel);
     }
-
 
     public void createSouthPanel()
     {
@@ -234,13 +219,6 @@ public class ClientMainGUI extends JFrame
                        File selectedImage = fileChooser.getSelectedFile();
                        insertedImageLabel.setText(selectedImage.getName());
                        uploadedImage = new ImageIcon(String.valueOf((selectedImage)));
-
-//                       JFrame frame = new JFrame();
-//                       JLabel label = new JLabel(uploadedImage);
-//                       label.setVisible(true);
-//                       frame.add(label);
-//                       frame.pack();
-//                       frame.setVisible(true);
                    }
                }
             }
@@ -292,8 +270,7 @@ public class ClientMainGUI extends JFrame
         return selectedUsers;
     }
 
-    public void updateChat(User user, String newChat){
-        Message message = new Message(user,newChat);
+    private void updateChatLogs(Message message) {
         Message[] tmp = new Message[chatLogs.length+1];
         for (int i = 0;i<chatLogs.length;i++) //Kopierar över de existerande meddelanden till en temporär array.
         {
@@ -306,44 +283,24 @@ public class ClientMainGUI extends JFrame
         {
             chatLogs[j] = tmp[j];
         }
+    }
 
+    public void updateChat(User user, String newChat){
+        Message message = new Message(user,newChat);
+        updateChatLogs(message);
         chatBox.setListData(chatLogs); // update the gui componenet
     }
 
     public void updateChat(User user, String newChat, ImageIcon image){
         String chat = newChat;
         Message message = new Message(user, chat, image);
-        Message[] tmp = new Message[chatLogs.length+1];
-        for (int i = 0;i<chatLogs.length;i++) //Kopierar över de existerande meddelanden till en temporär array.
-        {
-            tmp[i] = chatLogs[i];
-        }
-
-        tmp[chatLogs.length] = message; //Lägger in det nya meddelandet.
-        chatLogs = new Message[tmp.length];
-        for (int j = 0; j<tmp.length;j++) //Lägger tillbaka meddelanden tillsammans med det nya skapade.
-        {
-            chatLogs[j] = tmp[j];
-        }
-
+        updateChatLogs(message);
         chatBox.setListData(chatLogs); // update the gui componenet
     }
 
     public void updateChat(User user, ImageIcon image){
         Message message = new Message(user, image);
-        Message[] tmp = new Message[chatLogs.length+1];
-        for (int i = 0;i<chatLogs.length;i++) //Kopierar över de existerande meddelanden till en temporär array.
-        {
-            tmp[i] = chatLogs[i];
-        }
-
-        tmp[chatLogs.length] = message; //Lägger in det nya meddelandet.
-        chatLogs = new Message[tmp.length];
-        for (int j = 0; j<tmp.length;j++) //Lägger tillbaka meddelanden tillsammans med det nya skapade.
-        {
-            chatLogs[j] = tmp[j];
-        }
-
+        updateChatLogs(message);
         chatBox.setListData(chatLogs); // update the gui componenet
     }
 
@@ -368,8 +325,12 @@ public class ClientMainGUI extends JFrame
         addReceiverFromOnlineUsersBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                selectedUsers.add(onlineList.getSelectedValue()); // save the selected user in a list
-                updateReceiversLabel();
+                User selectedUser = onlineList.getSelectedValue();
+
+                if(!selectedUsers.contains(selectedUser)) { // if the selected user hasn't been added yet as a receiver
+                    selectedUsers.add(selectedUser); // save the selected user in a list
+                    updateReceiversLabel();
+                } else { System.out.println("The person is already selected as a receiver"); }
             }
         });
 
