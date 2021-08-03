@@ -16,8 +16,10 @@ import java.util.ArrayList;
 
 public class ClientMainGUI extends JFrame
 {
+    private final Controller controller;
+    private final User user;
+
     //Komponenter
-    private Controller controller;
     private JPanel leftChatPanel;
     private JPanel rightContactsPanel;
     private JPanel southPanel;
@@ -39,7 +41,7 @@ public class ClientMainGUI extends JFrame
     private JFileChooser fileChooser;
     private Font labelFont = new Font("", Font.PLAIN, 25);
     private ImageIcon uploadedImage = null;
-
+    private String message;
     private ArrayList<User> selectedUsers = new ArrayList<>();
 
     //Test users;
@@ -52,14 +54,13 @@ public class ClientMainGUI extends JFrame
 
     Message[] chatLogs = {};
 
-    //Variabler som gör vi kan hämta satta värden av programmet.
-    private String message;
-
-    public ClientMainGUI(Controller controller)
+    public ClientMainGUI(Controller controller, User user)
     {
         this.controller = controller;
+        this.user = user;
         InitializePanels();
         addListeners();
+        selectedUsers.add(user); // user (the owner of the gui) is always selected in default
     }
 
     public void InitializePanels()
@@ -346,6 +347,7 @@ public class ClientMainGUI extends JFrame
             @Override
             public void actionPerformed(ActionEvent e) {
                 selectedUsers.clear(); // remove all selected users inside the list
+                selectedUsers.add(user); // user (the owner of the gui) is always selected in default
                 updateReceiversLabel();
             }
         });
