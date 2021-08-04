@@ -249,18 +249,6 @@ public class ClientMainGUI extends JFrame
         frame.add(southPanel);
     }
 
-//    public void addContact(User user)
-//    {
-//        User[] tmpContacts = contacts;
-//        int size = tmpContacts.length;
-//        User[] newContacts = new User[size+1];
-//        for (int i = 0;i<tmpContacts.length;i++)
-//        {
-//            newContacts[i] = tmpContacts[i];
-//        }
-//        newContacts[size+1] = user;
-//    }
-
     public String getMessage()
     {
         return message;
@@ -361,7 +349,11 @@ public class ClientMainGUI extends JFrame
 
                 if(selectedUser.getUsername().equals(user.getUsername())) {
                     JOptionPane.showMessageDialog(null, "Cannot add yourself to contact list!");
-                } else {
+                }
+                else if(contacts.contains(selectedUser)) {
+                    JOptionPane.showMessageDialog(null, "The selected user has already been added!");
+                }
+                else {
                     contacts.add(selectedUser);
                     User[] contactsArr = contacts.toArray(new User[0]); // convert arrayList to array
                     contactList.setListData(contactsArr);
