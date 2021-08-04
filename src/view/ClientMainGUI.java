@@ -49,7 +49,8 @@ public class ClientMainGUI extends JFrame
     User Jagtej = new User("Jagtej", new ImageIcon("images/robot.png"));
 
     //Kontaktlista
-    User[] contacts = {Mads,Jagtej};
+    private ArrayList<User> contacts = new ArrayList<>();
+
     String[] online = {};
 
     Message[] chatLogs = {};
@@ -152,7 +153,8 @@ public class ClientMainGUI extends JFrame
         removeContactBtn.setBounds(150, 280, 115, 50);
 
         Border blackline = BorderFactory.createLineBorder(Color.black);
-        contactList = new JList(contacts);
+        User[] contactsArr = contacts.toArray(new User[0]);
+        contactList = new JList(contactsArr);
         contactList.setBounds(30, 50, 235, 220);
         contactList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); // makes sure that one list index is selected at a time
         contactList.setBorder(blackline);
@@ -349,6 +351,21 @@ public class ClientMainGUI extends JFrame
                 selectedUsers.clear(); // remove all selected users inside the list
                 selectedUsers.add(user); // user (the owner of the gui) is always selected in default
                 updateReceiversLabel();
+            }
+        });
+
+        addContactBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                User selectedUser = onlineList.getSelectedValue();
+
+                if(selectedUser.getUsername().equals(user.getUsername())) {
+                    JOptionPane.showMessageDialog(null, "Cannot add yourself to contact list!");
+                } else {
+                    contacts.add(selectedUser);
+                    User[] contactsArr = contacts.toArray(new User[0]); // convert arrayList to array
+                    contactList.setListData(contactsArr);
+                }
             }
         });
     }
