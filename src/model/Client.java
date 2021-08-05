@@ -48,7 +48,6 @@ public class Client extends Thread {
                     else if(objReceived instanceof Message) {
                         Message messageReceived = (Message)objReceived;
                         System.out.println(messageReceived.GetUser().toString() + ": " + messageReceived.getMessage());
-
                         checkMessage(messageReceived);
                     }
 
@@ -79,7 +78,6 @@ public class Client extends Thread {
     }
 
     private void checkMessage(Message message) {
-
         if (message.getMessage().equals("") && message.getSentImage() == null) { // no text && no image
             // JOptionPane.showMessageDialog(null,"Du måste skriva något för att skicka.");
             System.out.println("You can't send an empty message!");

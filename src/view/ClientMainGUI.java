@@ -61,7 +61,7 @@ public class ClientMainGUI extends JFrame
         this.user = user;
         InitializePanels();
         addListeners();
-        selectedUsers.add(user); // user (the owner of the gui) is always selected in default
+        selectedUsers.add(user); // user (the owner of the gui) is always selected by default
     }
 
     public void InitializePanels()
@@ -236,6 +236,7 @@ public class ClientMainGUI extends JFrame
                     message = messageBox.getText();
                     controller.buttonPressed(ButtonType.Send);
                     uploadedImage = null;
+                    insertedImageLabel.setText("");
                 }
             }
         });
@@ -322,7 +323,7 @@ public class ClientMainGUI extends JFrame
                 if(!selectedUsers.contains(selectedUser)) { // if the selected user hasn't been added yet as a receiver
                     selectedUsers.add(selectedUser); // save the selected user in a list
                     updateReceiversLabel();
-                } else { System.out.println("The person is already selected as a receiver"); }
+                } else { JOptionPane.showMessageDialog(null, "You are always selected as a receiver by default"); }
             }
         });
 
@@ -337,7 +338,7 @@ public class ClientMainGUI extends JFrame
             @Override
             public void actionPerformed(ActionEvent e) {
                 selectedUsers.clear(); // remove all selected users inside the list
-                selectedUsers.add(user); // user (the owner of the gui) is always selected in default
+                selectedUsers.add(user); // user (the owner of the gui) is always selected by default
                 updateReceiversLabel();
             }
         });
