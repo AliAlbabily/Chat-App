@@ -35,10 +35,10 @@ public class Controller {
                 break;
             case Send:
                 String textMessage = clientMainGUI.getMessage();
-                User[] allOnlineUsers = clientMainGUI.getSelectedUsers().toArray(new User[0]);
+                User[] selectedUsers = clientMainGUI.getSelectedUsers().toArray(new User[0]);
                 ImageIcon uploadedImage = clientMainGUI.getUploadedImage();
 
-                Message newMessage = new Message(user, textMessage, uploadedImage, allOnlineUsers); // create a new Message-object
+                Message newMessage = new Message(user, textMessage, uploadedImage, selectedUsers); // create a new Message-object
                 client.sendMessageToServer(newMessage);
                 break;
             default:

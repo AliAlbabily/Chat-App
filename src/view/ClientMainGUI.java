@@ -42,18 +42,10 @@ public class ClientMainGUI extends JFrame
     private Font labelFont = new Font("", Font.PLAIN, 25);
     private ImageIcon uploadedImage = null;
     private String message;
-    private ArrayList<User> selectedUsers = new ArrayList<>();
-
-    //Test users;
-    User Mads = new User("Mads", new ImageIcon("images/goat.jpg"));
-    User Jagtej = new User("Jagtej", new ImageIcon("images/robot.png"));
-
-    //Kontaktlista
+    private ArrayList<User> selectedUsers = new ArrayList<>(); // receivers
     private ArrayList<User> contacts = new ArrayList<>();
-
-    String[] online = {};
-
-    Message[] chatLogs = {};
+    private String[] online = {}; // FIXME: convert to array of users and make it a local variable
+    private Message[] chatLogs = {};
 
     public ClientMainGUI(Controller controller, User user)
     {
@@ -285,8 +277,7 @@ public class ClientMainGUI extends JFrame
     }
 
     public void updateChat(User user, String newChat, ImageIcon image){
-        String chat = newChat;
-        Message message = new Message(user, chat, image);
+        Message message = new Message(user, newChat, image);
         updateChatLogs(message);
         chatBox.setListData(chatLogs); // update the gui componenet
     }
@@ -330,7 +321,12 @@ public class ClientMainGUI extends JFrame
         addReceiverFromContactsBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("test 2");
+                User selectedUser = contactList.getSelectedValue();
+
+                if(!selectedUsers.contains(selectedUser)) { // if the selected user hasn't been added yet as a receiver
+                    selectedUsers.add(selectedUser); // save the selected user in a list
+                    updateReceiversLabel();
+                }
             }
         });
 
@@ -363,4 +359,3 @@ public class ClientMainGUI extends JFrame
         });
     }
 }
-
