@@ -44,7 +44,6 @@ public class ClientMainGUI extends JFrame
     private String message;
     private ArrayList<User> selectedUsers = new ArrayList<>(); // receivers
     private ArrayList<User> contacts = new ArrayList<>();
-    private String[] online = {}; // FIXME: convert to array of users and make it a local variable
     private Message[] chatLogs = {};
 
     public ClientMainGUI(Controller controller, User user)
@@ -152,7 +151,8 @@ public class ClientMainGUI extends JFrame
         contactList.setBorder(blackline);
         contactList.setFont(new Font("", Font.PLAIN,20));
 
-        onlineList = new JList(online);
+        User[] onlineUsersArr = {};
+        onlineList = new JList(onlineUsersArr);
         onlineList.setBounds(30, 450, 235, 220);
         onlineList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); // makes sure that one list index is selected at a time
         onlineList.setBorder(blackline);
