@@ -9,8 +9,7 @@ import javax.swing.border.Border;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -189,6 +188,18 @@ public class ClientMainGUI extends JFrame
 
         messageBox = new JTextField();
         messageBox.setBounds(30, 90, 470, 50);
+        messageBox.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER)
+                {
+                    message = messageBox.getText();
+                    controller.buttonPressed(ButtonType.Send);
+                    uploadedImage = null;
+                    insertedImageLabel.setText("");
+                }
+            }
+        });
 
         sendButton = new JButton("Send Message");
         sendButton.setBounds(30, 210, 325, 50);
@@ -232,6 +243,7 @@ public class ClientMainGUI extends JFrame
                 }
             }
         });
+
 
         southPanel.add(receiversNamesLabel);
         southPanel.add(messageBox);
