@@ -314,7 +314,7 @@ public class ClientMainGUI extends JFrame
                 if(!selectedUsers.contains(selectedUser)) { // if the selected user hasn't been added yet as a receiver
                     selectedUsers.add(selectedUser); // save the selected user in a list
                     updateReceiversLabel();
-                } else { JOptionPane.showMessageDialog(null, "You are always selected as a receiver by default"); }
+                } else { JOptionPane.showMessageDialog(null, "Already added as a receiver!"); }
             }
         });
 
@@ -326,7 +326,7 @@ public class ClientMainGUI extends JFrame
                 if(!selectedUsers.contains(selectedUser)) { // if the selected user hasn't been added yet as a receiver
                     selectedUsers.add(selectedUser); // save the selected user in a list
                     updateReceiversLabel();
-                }
+                } else { JOptionPane.showMessageDialog(null, "Already added as a receiver!"); }
             }
         });
 
