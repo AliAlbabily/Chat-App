@@ -12,11 +12,14 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.ArrayList;
 
 public class ClientMainGUI extends JFrame
 {
+    private final Controller controller;
+    private final User user;
+
     //Komponenter
-    private Controller controller;
     private JPanel leftChatPanel;
     private JPanel rightContactsPanel;
     private JPanel southPanel;
@@ -28,7 +31,6 @@ public class ClientMainGUI extends JFrame
     private JButton removeContactBtn;
     private JButton addReceiverFromOnlineUsersBtn;
     private JButton addContactBtn;
-
     private JLabel receiversNamesLabel;
     private JTextField messageBox; // where the text message is written
     private JLabel insertedImageLabel;
@@ -37,35 +39,20 @@ public class ClientMainGUI extends JFrame
     private JButton clearAllReceiversBtn;
 
     private JFileChooser fileChooser;
-    private File selectedImage;
     private Font labelFont = new Font("", Font.PLAIN, 25);
-
-    //Vald användare i kontaktlista
-    private User selectedUser = null;
-
-    //Test users;
-    User Mads = new User("Mads", new ImageIcon("images/goat.jpg"));
-    User Jagtej = new User("Jagtej", new ImageIcon("images/robot.png"));
-
-    //Kontaktlista
-    User[] contacts = {Mads,Jagtej};
-    String[] online = {};
-
-    Message testMessage = new Message(Mads, "hej på dig!", new ImageIcon("images/goat.jpg"));
-    Message testMessage2 = new Message(Jagtej, "Tjo snygging!!");
-
-    Message[] chatLogs = {testMessage, testMessage2};
-
-    //Variabler som gör vi kan hämta satta värden av programmet.
-    private String username;
-    private ImageIcon imageIcon;
+    private ImageIcon uploadedImage = null;
     private String message;
+    private ArrayList<User> selectedUsers = new ArrayList<>(); // receivers
+    private ArrayList<User> contacts = new ArrayList<>();
+    private Message[] chatLogs = {};
 
-
-    public ClientMainGUI(Controller controller)
+    public ClientMainGUI(Controller controller, User user)
     {
         this.controller = controller;
+        this.user = user;
         InitializePanels();
+        addListeners();
+        selectedUsers.add(user); // user (the owner of the gui) is always selected by default
     }
 
     public void InitializePanels()
@@ -113,18 +100,20 @@ public class ClientMainGUI extends JFrame
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 Message message = chatBox.getSelectedValue();
-                ImageIcon imageIcon = message.getSentImage();
+                ImageIcon imageIcon = null;
+
                 if (e.getValueIsAdjusting()) // bara en handling vid mus klick
                 {
-                    return;
+                    imageIcon = message.getSentImage();
                 }
                 if (imageIcon != null)
                 {
-                   JFrame frame = new JFrame("Attached image");
-                   JLabel label = new JLabel(imageIcon);
-                   frame.add(label);
-                   frame.pack();
-                   frame.setVisible(true);
+                    JFrame frame = new JFrame("Attached image");
+                    JLabel label = new JLabel(imageIcon);
+                    frame.add(label);
+                    frame.pack();
+                    frame.setVisible(true);
+                    frame.setLocationRelativeTo(null); // window gets placed on the middle of the screen
                 }
             }
         });
@@ -155,43 +144,20 @@ public class ClientMainGUI extends JFrame
         removeContactBtn.setBounds(150, 280, 115, 50);
 
         Border blackline = BorderFactory.createLineBorder(Color.black);
-        contactList = new JList(contacts);
+        User[] contactsArr = contacts.toArray(new User[0]);
+        contactList = new JList(contactsArr);
         contactList.setBounds(30, 50, 235, 220);
         contactList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); // makes sure that one list index is selected at a time
         contactList.setBorder(blackline);
         contactList.setFont(new Font("", Font.PLAIN,20));
 
-        contactList.addListSelectionListener(new ListSelectionListener() { // FIXME : leder till 2 handlingar vid mus klick
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                if (e.getValueIsAdjusting())
-                {
-                    return;
-                }
-                User selected = contactList.getSelectedValue();
-                username = selected.getUsername();
-                imageIcon = selected.getImageIcon();
-                selectedUser = new User(username,imageIcon);
-            }
-        });
-
-        onlineList = new JList(online);
+        User[] onlineUsersArr = {};
+        onlineList = new JList(onlineUsersArr);
         onlineList.setBounds(30, 450, 235, 220);
         onlineList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); // makes sure that one list index is selected at a time
         onlineList.setBorder(blackline);
         onlineList.setForeground(Color.green);
         onlineList.setFont(new Font("", Font.PLAIN,20));
-
-        onlineList.addListSelectionListener(new ListSelectionListener() { // FIXME : leder till 2 handlingar vid mus klick
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                User selected = onlineList.getSelectedValue();
-                username = selected.getUsername();
-                imageIcon = selected.getImageIcon();
-//                selectedUser = new User(username,imageIcon);
-                System.out.println(username);
-            }
-        });
 
         addReceiverFromOnlineUsersBtn = new JButton("Add receiver");
         addReceiverFromOnlineUsersBtn.setBounds(30, 680, 115, 50);
@@ -208,7 +174,6 @@ public class ClientMainGUI extends JFrame
         rightContactsPanel.add(addContactBtn);
         frame.add(rightContactsPanel);
     }
-
 
     public void createSouthPanel()
     {
@@ -247,49 +212,26 @@ public class ClientMainGUI extends JFrame
                    int returnVal = fileChooser.showOpenDialog(ClientMainGUI.this);
                    if (returnVal == JFileChooser.APPROVE_OPTION)
                    {
-                       selectedImage = fileChooser.getSelectedFile();
-                       System.out.println("images/"+selectedImage.getName());
-                       ImageIcon imageIcon = new ImageIcon(String.valueOf((selectedImage)));
-                       JFrame frame = new JFrame();
-                       JLabel label = new JLabel(imageIcon);
-                       label.setVisible(true);
-                       label.setPreferredSize(new Dimension(100,100));
-                       frame.add(label);
-                       frame.pack();
-                       frame.setVisible(true);
-                       frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                       File selectedImage = fileChooser.getSelectedFile();
+                       insertedImageLabel.setText(selectedImage.getName());
+                       uploadedImage = new ImageIcon(String.valueOf((selectedImage)));
                    }
                }
-            }
-        });
-
-        fileChooser.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (e.getSource() == openFileButton)
-                {
-                    int returnVal = fileChooser.showOpenDialog(ClientMainGUI.this);
-                    if (returnVal == JFileChooser.APPROVE_OPTION)
-                    {
-                        File file = fileChooser.getSelectedFile();
-                        ImageIcon imageIcon = new ImageIcon(("images/"+file));
-                        JFrame frame = new JFrame();
-                        JLabel label = new JLabel(imageIcon);
-                        frame.add(label);
-                        frame.setVisible(true);
-                    }
-                }
             }
         });
 
         sendButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                message = messageBox.getText();
+                if (e.getSource()==sendButton)
+                {
+                    message = messageBox.getText();
+                    controller.buttonPressed(ButtonType.Send);
+                    uploadedImage = null;
+                    insertedImageLabel.setText("");
+                }
             }
         });
-
-        addListeners(); // FIXME : Maybe this method is unnecessary
 
         southPanel.add(receiversNamesLabel);
         southPanel.add(messageBox);
@@ -300,116 +242,120 @@ public class ClientMainGUI extends JFrame
         frame.add(southPanel);
     }
 
-    private void addListeners() {
-        ActionListener listener = new ButtonActionListeners();
-        sendButton.addActionListener(listener);
+    public String getMessage()
+    {
+        return message;
     }
 
-    class ButtonActionListeners implements ActionListener
-    {
-        public void actionPerformed(ActionEvent e)
+    public ImageIcon getUploadedImage() {
+        return uploadedImage;
+    }
+
+    public ArrayList<User> getSelectedUsers() {
+        return selectedUsers;
+    }
+
+    private void updateChatLogs(Message message) {
+        Message[] tmp = new Message[chatLogs.length+1];
+        for (int i = 0;i<chatLogs.length;i++) //Kopierar över de existerande meddelanden till en temporär array.
         {
-            if (e.getSource()==sendButton)
-            {
-                controller.buttonPressed(ButtonType.Send);
-                selectedImage = null;
-            }
-        }
+            tmp[i] = chatLogs[i];
         }
 
-//    public void addContact(User user)
-//    {
-//        User[] tmpContacts = contacts;
-//        int size = tmpContacts.length;
-//        User[] newContacts = new User[size+1];
-//        for (int i = 0;i<tmpContacts.length;i++)
-//        {
-//            newContacts[i] = tmpContacts[i];
-//        }
-//        newContacts[size+1] = user;
-//    }
-//
-//    public User getSelectedContact()
-//    {
-//        return selectedUser;
-//    }
-//
-//    public String getMessage()
-//    {
-//        if (messageBox.equals(""))
-//        {
-//            JOptionPane.showMessageDialog(null,"Du måste fylla i chatboxen för att skicka.");
-//            return null;
-//        }
-//        return message;
-//    }
-//
-//    public ImageIcon getImageIcon()
-//    {
-//        if (selectedImage == null)
-//        {
-//            return null;
-//        }
-//        else return new ImageIcon("images/"+selectedImage.getName());
-//    }
-//
-//    public void updateChat(String newChat, User user){
-//
-//        Message message = new Message(user,newChat);
-//        Message[] tmp = new Message[chatLogs.length+1];
-//        for (int i = 0;i<chatLogs.length;i++) //Kopierar över de existerande meddelanden till en temporär array.
-//        {
-//            tmp[i] = chatLogs[i];
-//        }
-//
-//        tmp[chatLogs.length] = message; //Lägger in det nya meddelandet.
-//        chatLogs = new Message[tmp.length];
-//        for (int j = 0; j<tmp.length;j++) //Lägger tillbaka meddelanden tillsammans med det nya skapade.
-//        {
-//            chatLogs[j] = tmp[j];
-//        }
-//    }
-//
-//    public void updateChat(String newChat, User user, ImageIcon image){
-//        String chat = newChat;
-//        Message message = new Message(user,chat,image);
-//        Message[] tmp = new Message[chatLogs.length+1];
-//        for (int i = 0;i<chatLogs.length;i++) //Kopierar över de existerande meddelanden till en temporär array.
-//        {
-//            tmp[i] = chatLogs[i];
-//        }
-//
-//        tmp[chatLogs.length] = message; //Lägger in det nya meddelandet.
-//        chatLogs = new Message[tmp.length];
-//        for (int j = 0; j<tmp.length;j++) //Lägger tillbaka meddelanden tillsammans med det nya skapade.
-//        {
-//            chatLogs[j] = tmp[j];
-//        }
-//    }
-//
-//    public void updateChat(User user, ImageIcon image){
-//        Message message = new Message(user,image);
-//        Message[] tmp = new Message[chatLogs.length+1];
-//        for (int i = 0;i<chatLogs.length;i++) //Kopierar över de existerande meddelanden till en temporär array.
-//        {
-//            tmp[i] = chatLogs[i];
-//        }
-//
-//        tmp[chatLogs.length] = message; //Lägger in det nya meddelandet.
-//        chatLogs = new Message[tmp.length];
-//        for (int j = 0; j<tmp.length;j++) //Lägger tillbaka meddelanden tillsammans med det nya skapade.
-//        {
-//            chatLogs[j] = tmp[j];
-//        }
-//    }
+        tmp[chatLogs.length] = message; //Lägger in det nya meddelandet.
+        chatLogs = new Message[tmp.length];
+        for (int j = 0; j<tmp.length;j++) //Lägger tillbaka meddelanden tillsammans med det nya skapade.
+        {
+            chatLogs[j] = tmp[j];
+        }
+    }
+
+    public void updateChat(User user, String newChat){
+        Message message = new Message(user,newChat);
+        updateChatLogs(message);
+        chatBox.setListData(chatLogs); // update the gui componenet
+    }
+
+    public void updateChat(User user, String newChat, ImageIcon image){
+        Message message = new Message(user, newChat, image);
+        updateChatLogs(message);
+        chatBox.setListData(chatLogs); // update the gui componenet
+    }
+
+    public void updateChat(User user, ImageIcon image){
+        Message message = new Message(user, image);
+        updateChatLogs(message);
+        chatBox.setListData(chatLogs); // update the gui componenet
+    }
 
     public void updateOnlineJList(User[] onlineUsers) {
         onlineList.removeAll();
         onlineList.setListData(onlineUsers);
     }
 
-//    public void addNewOnlineUser(User user) {
-//
-//    }
-}
+    private void updateReceiversLabel() {
+        User[] selectedUsersArr = selectedUsers.toArray(new User[0]);
+        String selectedUsersStr = "Receivers: ";
 
+        if(!selectedUsers.isEmpty()) { // when the list is not empty
+            for (User user : selectedUsersArr) {
+                selectedUsersStr = selectedUsersStr + user.toString() + " / ";
+                receiversNamesLabel.setText(selectedUsersStr);
+            }
+        } else { receiversNamesLabel.setText("Receivers: "); }
+    }
+
+    private void addListeners() {
+        addReceiverFromOnlineUsersBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                User selectedUser = onlineList.getSelectedValue();
+
+                if(!selectedUsers.contains(selectedUser)) { // if the selected user hasn't been added yet as a receiver
+                    selectedUsers.add(selectedUser); // save the selected user in a list
+                    updateReceiversLabel();
+                } else { JOptionPane.showMessageDialog(null, "Already added as a receiver!"); }
+            }
+        });
+
+        addReceiverFromContactsBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                User selectedUser = contactList.getSelectedValue();
+
+                if(!selectedUsers.contains(selectedUser)) { // if the selected user hasn't been added yet as a receiver
+                    selectedUsers.add(selectedUser); // save the selected user in a list
+                    updateReceiversLabel();
+                } else { JOptionPane.showMessageDialog(null, "Already added as a receiver!"); }
+            }
+        });
+
+        clearAllReceiversBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                selectedUsers.clear(); // remove all selected users inside the list
+                selectedUsers.add(user); // user (the owner of the gui) is always selected by default
+                updateReceiversLabel();
+            }
+        });
+
+        addContactBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                User selectedUser = onlineList.getSelectedValue();
+
+                if(selectedUser.getUsername().equals(user.getUsername())) {
+                    JOptionPane.showMessageDialog(null, "Cannot add yourself to contact list!");
+                }
+                else if(contacts.contains(selectedUser)) {
+                    JOptionPane.showMessageDialog(null, "The selected user has already been added!");
+                }
+                else {
+                    contacts.add(selectedUser);
+                    User[] contactsArr = contacts.toArray(new User[0]); // convert arrayList to array
+                    contactList.setListData(contactsArr);
+                }
+            }
+        });
+    }
+}

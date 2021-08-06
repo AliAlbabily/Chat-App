@@ -66,6 +66,10 @@ public class Server {
                         globalOnlineUsers.put((User)objReceived, this); // spara en referens av ClientHandler i hashmapen med sin motsvarande User
                         updateOnlineUsersList();
                     }
+                    else if(objReceived instanceof Message) {
+                        Message messageReceived = (Message)objReceived;
+                        sendMessageToReceivers(messageReceived);
+                    }
 
                 }
             }
@@ -106,6 +110,17 @@ public class Server {
             ClientHandler client = globalOnlineUsers.getHashMapList().get(key);
             // skicka den senaste infon om anslutna användare till alla klienter
             client.getOos().writeObject( onlineUsers );
+            client.getOos().flush();
+        }
+    }
+
+    private void sendMessageToReceivers(Message message) throws IOException {
+        User[] receivers = message.getArrayOfReceivers();
+
+        for ( User user : receivers ) {
+            ClientHandler client = globalOnlineUsers.getHashMapList().get(user);
+
+            client.getOos().writeObject(message);
             client.getOos().flush();
         }
     }

@@ -11,7 +11,7 @@ public class Clients implements Serializable {
         clients.put(user,client);
     }
 
-    public synchronized Server.ClientHandler get(User user) {
+    public synchronized Server.ClientHandler get(User user) { // FIXME : den här kanske inte behövs alls!!
         return get(user);
     }
 

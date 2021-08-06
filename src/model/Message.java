@@ -18,11 +18,19 @@ public class Message implements Serializable {
         this.message = message;
     }
 
-    public Message(User sender, String message, ImageIcon sentImage)
+    public Message(User user, String message, ImageIcon image)
+    {
+        this.sender = user;
+        this.message = message;
+        this.sentImage = image;
+    }
+
+    public Message(User sender, String message, ImageIcon sentImage, User[] arrayOfReceivers)
     {
         this.sender = sender;
         this.message = message;
         this.sentImage = sentImage;
+        this.arrayOfReceivers = arrayOfReceivers;
     }
 
     public Message(User sender, ImageIcon sentImage)
@@ -53,6 +61,10 @@ public class Message implements Serializable {
 
     public ImageIcon getSentImage() {
         return sentImage;
+    }
+
+    public User[] getArrayOfReceivers() {
+        return arrayOfReceivers;
     }
 
     @Override
