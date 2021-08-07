@@ -107,7 +107,7 @@ public class Server {
 
         for ( User key : globalOnlineUsers.getHashMapList().keySet() ) {
             // få tag på alla ClientHandlers i hashmappen
-            ClientHandler client = globalOnlineUsers.getHashMapList().get(key);
+            ClientHandler client = globalOnlineUsers.getHashMapList().get(key); // FIXME : inte sykroniskt anrop!
             // skicka den senaste infon om anslutna användare till alla klienter
             client.getOos().writeObject( onlineUsers );
             client.getOos().flush();
@@ -118,7 +118,7 @@ public class Server {
         User[] receivers = message.getArrayOfReceivers();
 
         for ( User user : receivers ) {
-            ClientHandler client = globalOnlineUsers.getHashMapList().get(user);
+            ClientHandler client = globalOnlineUsers.getHashMapList().get(user); // FIXME : inte sykroniskt anrop!
 
             client.getOos().writeObject(message);
             client.getOos().flush();
