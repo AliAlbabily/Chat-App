@@ -87,6 +87,10 @@ public class Server {
         public ObjectOutputStream getOos() {
             return oos;
         }
+
+        public Socket getSocket() {
+            return socket;
+        }
     }
 
     public static void main(String[] args) {
@@ -107,7 +111,7 @@ public class Server {
 
         for ( User key : globalOnlineUsers.getHashMapList().keySet() ) {
             // få tag på alla ClientHandlers i hashmappen
-            ClientHandler client = globalOnlineUsers.getHashMapList().get(key); // FIXME : inte sykroniskt anrop!
+            ClientHandler client = globalOnlineUsers.getHashMapList().get(key);
             // skicka den senaste infon om anslutna användare till alla klienter
             client.getOos().writeObject( onlineUsers );
             client.getOos().flush();
@@ -118,7 +122,11 @@ public class Server {
         User[] receivers = message.getArrayOfReceivers();
 
         for ( User user : receivers ) {
-            ClientHandler client = globalOnlineUsers.getHashMapList().get(user); // FIXME : inte sykroniskt anrop!
+            ClientHandler client = globalOnlineUsers.getHashMapList().get(user);
+
+            // TODO : kolla ifall en klient är offline eller online (genom att kolla socket:ens status)
+            //  om användaren är online
+            //  om användaren är offline
 
             client.getOos().writeObject(message);
             client.getOos().flush();
