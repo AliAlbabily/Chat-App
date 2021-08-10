@@ -2,6 +2,7 @@ package model;
 
 import javax.swing.*;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Date;
 
 public class Message implements Serializable {
@@ -39,6 +40,19 @@ public class Message implements Serializable {
         this.sentImage = sentImage;
     }
 
+    // filter the current array of receivers and keep only the given user
+    public User[] filterReceivers(User offlineUserToKeep) {
+        User[] tempArray = new User[1]; // new array of receivers
+
+        for( User userReceiver :  arrayOfReceivers ) {
+            if( userReceiver.getUsername().equals(offlineUserToKeep.getUsername()) ) {
+                tempArray[0] = userReceiver;
+            }
+        }
+
+        return tempArray;
+    }
+
     //<editor-fold desc="Getters and setters">
     public ImageIcon GetUserPicture()
     {
@@ -65,6 +79,10 @@ public class Message implements Serializable {
 
     public User[] getArrayOfReceivers() {
         return arrayOfReceivers;
+    }
+
+    public void setArrayOfReceivers(User[] arrayOfReceivers) {
+        this.arrayOfReceivers = arrayOfReceivers;
     }
 
     @Override

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 public class Server {
 
     private Clients globalOnlineUsers = new Clients(); // lista av anslutna användare (online users)
+    private UnsentMessages unsentMessagesObj = new UnsentMessages();
 
     public Server(int port) throws IOException {
         new Connection(port).start();
@@ -65,6 +66,11 @@ public class Server {
                         key = (User)objReceived;
                         globalOnlineUsers.put((User)objReceived, this); // spara en referens av ClientHandler i hashmapen med sin motsvarande User
                         updateOnlineUsersList();
+
+                        // TODO: kolla om den anslutna user har meddelanden att ta emot
+                        checkIfUserHasUnsentMessages((User)objReceived);
+
+
                     }
                     else if(objReceived instanceof Message) {
                         Message messageReceived = (Message)objReceived;
@@ -118,18 +124,56 @@ public class Server {
         }
     }
 
+    // TODO 1: fixa så att man inte får dubbla meddelanden
+    // TODO 2: när en användare har fått sina medelanden, rensa unsent-hashmapen från den användaren
+    private void checkIfUserHasUnsentMessages(User onlineUser) {
+
+        for ( User key : unsentMessagesObj.getUnsentHashMap().keySet() ) {
+            if (onlineUser.getUsername().equals( key.getUsername() )) { // check if online user exists in the hashmap (unsent)
+                ArrayList<Message> userUnsentMessages = unsentMessagesObj.getUnsentMessages(key);
+
+                userUnsentMessages.forEach( message -> {
+                    try {
+                        sendMessageToReceivers(message);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+
+            }
+        }
+    }
+
     private void sendMessageToReceivers(Message message) throws IOException {
         User[] receivers = message.getArrayOfReceivers();
 
-        for ( User user : receivers ) {
-            ClientHandler client = globalOnlineUsers.getHashMapList().get(user);
+        System.out.println("Server: " + receivers.length);
 
-            // TODO : kolla ifall en klient är offline eller online (genom att kolla socket:ens status)
-            //  om användaren är online
-            //  om användaren är offline
+        try {
+            for ( User user : receivers ) {
+                ClientHandler client = globalOnlineUsers.getHashMapList().get(user);
 
-            client.getOos().writeObject(message);
-            client.getOos().flush();
+                if(client == null) {
+                    System.out.println("Client is offline");
+
+                    // TODO : need to be tested
+                    User[] filteredReceivers = message.filterReceivers(user);
+                    message.setArrayOfReceivers(filteredReceivers);
+                    //
+
+                    unsentMessagesObj.put(user, message);
+                }
+                if (client.getSocket().isConnected()) {
+                    System.out.println("client is online");
+
+                    client.getOos().writeObject(message);
+                    client.getOos().flush();
+                }
+
+            }
+        } catch (Exception e) {
+            System.out.println(e);
         }
+
     }
 }

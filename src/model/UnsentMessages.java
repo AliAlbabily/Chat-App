@@ -19,6 +19,8 @@ public class UnsentMessages {
         else { // if the given user already has an array list (unsent messages)
             getUnsentMessages(user).add(message); // add a new message to the array list of the given user
         }
+
+        System.out.println("UnsentMessages: " + unsent.get(user).size());
     }
 
     public synchronized ArrayList<Message> getUnsentMessages(User user) {
@@ -27,6 +29,10 @@ public class UnsentMessages {
 
     public synchronized void removeUnsentMessagesForUser(User user) {
         unsent.replace(user, null);
+    }
+
+    public HashMap<User, ArrayList<Message>> getUnsentHashMap() {
+        return unsent;
     }
 }
 
