@@ -67,10 +67,7 @@ public class Server {
                         globalOnlineUsers.put((User)objReceived, this); // spara en referens av ClientHandler i hashmapen med sin motsvarande User
                         updateOnlineUsersList();
 
-                        // TODO: kolla om den anslutna user har meddelanden att ta emot
                         checkIfUserHasUnsentMessages((User)objReceived);
-
-
                     }
                     else if(objReceived instanceof Message) {
                         Message messageReceived = (Message)objReceived;
@@ -124,8 +121,6 @@ public class Server {
         }
     }
 
-    // TODO 1: fixa så att man inte får dubbla meddelanden
-    // TODO 2: när en användare har fått sina medelanden, rensa unsent-hashmapen från den användaren
     private void checkIfUserHasUnsentMessages(User onlineUser) {
 
         for ( User key : unsentMessagesObj.getUnsentHashMap().keySet() ) {
@@ -140,14 +135,13 @@ public class Server {
                     }
                 });
 
+                unsentMessagesObj.getUnsentHashMap().remove(key); // clear the saved messages for the user that was offline
             }
         }
     }
 
     private void sendMessageToReceivers(Message message) throws IOException {
         User[] receivers = message.getArrayOfReceivers();
-
-        System.out.println("Server: " + receivers.length);
 
         try {
             for ( User user : receivers ) {
@@ -156,9 +150,9 @@ public class Server {
                 if(client == null) {
                     System.out.println("Client is offline");
 
-                    // TODO : need to be tested
-                    User[] filteredReceivers = message.filterReceivers(user);
-                    message.setArrayOfReceivers(filteredReceivers);
+                    // FIXME :
+//                    User[] filteredReceivers = message.filterReceivers(user);
+//                    message.setArrayOfReceivers(filteredReceivers);
                     //
 
                     unsentMessagesObj.put(user, message);
