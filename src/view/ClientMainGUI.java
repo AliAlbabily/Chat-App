@@ -317,6 +317,11 @@ public class ClientMainGUI extends JFrame
         } else { receiversNamesLabel.setText("Receivers: "); }
     }
 
+    public void updateContactsJList(ArrayList<User> contacts) {
+        User[] contactsArr = contacts.toArray(new User[0]); // convert arrayList to array
+        contactList.setListData(contactsArr);
+    }
+
     private void addListeners() {
         addReceiverFromOnlineUsersBtn.addActionListener(new ActionListener() {
             @Override
@@ -366,7 +371,17 @@ public class ClientMainGUI extends JFrame
                     contacts.add(selectedUser);
                     User[] contactsArr = contacts.toArray(new User[0]); // convert arrayList to array
                     contactList.setListData(contactsArr);
+
+                    // TODO : call controller and save contacts somewhere
+                    controller.saveNewContact(selectedUser);
                 }
+            }
+        });
+
+        removeContactBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.printUsersData(); // FIXME: temporärt!!
             }
         });
     }

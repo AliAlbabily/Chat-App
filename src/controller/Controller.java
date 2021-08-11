@@ -6,6 +6,7 @@ import view.ClientGUI;
 import view.ClientMainGUI;
 
 import javax.swing.*;
+import java.util.ArrayList;
 
 public class Controller {
 
@@ -13,9 +14,11 @@ public class Controller {
     private final ClientGUI clientGUI; // client connect view
     private User user;
     private Client client;
+    private Contacts contacts;
 
     public Controller() {
-         clientGUI = new ClientGUI(this);
+        clientGUI = new ClientGUI(this);
+        contacts = new Contacts();
     }
 
     public void buttonPressed(ButtonType button) {
@@ -30,6 +33,9 @@ public class Controller {
 
                 clientMainGUI = new ClientMainGUI(this, user); // öppna klient fönstret
                 clientGUI.closeClientConnectionWindow();
+
+                ArrayList<User> savedContacts = contacts.fetchContactsFromFile();
+                clientMainGUI.updateContactsJList(savedContacts);
 
                 client.sendUserToServer(user);
                 break;
@@ -61,5 +67,13 @@ public class Controller {
 
     public void updateChatGUI(User user, ImageIcon Image) {
         clientMainGUI.updateChat(user, Image);
+    }
+
+    public void saveNewContact(User user) {
+        contacts.saveNewContactInFile(user);
+    }
+
+    public void printUsersData() {
+        contacts.fetchContactsFromFile().forEach( contact -> System.out.println(contact.toString()) );
     }
 }
