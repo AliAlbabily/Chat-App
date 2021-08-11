@@ -42,17 +42,16 @@ public class ClientMainGUI extends JFrame
     private ImageIcon uploadedImage = null;
     private String message;
     private ArrayList<User> selectedUsers = new ArrayList<>(); // receivers
-    private ArrayList<User> contacts;
+    private ArrayList<User> contacts = new ArrayList<>();
     private Message[] chatLogs = {};
 
-    public ClientMainGUI(Controller controller, User user, ArrayList<User> contacts)
+    public ClientMainGUI(Controller controller, User user)
     {
         this.controller = controller;
         this.user = user;
         InitializePanels();
         addListeners();
         selectedUsers.add(user); // user (the owner of the gui) is always selected by default
-        this.contacts = contacts;
     }
 
     public void InitializePanels()
@@ -268,6 +267,10 @@ public class ClientMainGUI extends JFrame
         return selectedUsers;
     }
 
+    public void setContacts(ArrayList<User> contacts) {
+        this.contacts = contacts;
+    }
+
     private void updateChatLogs(Message message) {
         Message[] tmp = new Message[chatLogs.length+1];
         for (int i = 0;i<chatLogs.length;i++) //Kopierar över de existerande meddelanden till en temporär array.
@@ -318,10 +321,10 @@ public class ClientMainGUI extends JFrame
         } else { receiversNamesLabel.setText("Receivers: "); }
     }
 
-//    public void updateContactsJList(ArrayList<User> contacts) {
-//        User[] contactsArr = contacts.toArray(new User[0]); // convert arrayList to array
-//        contactList.setListData(contactsArr);
-//    }
+    public void updateContactsJList(ArrayList<User> contacts) {
+        User[] contactsArr = contacts.toArray(new User[0]); // convert arrayList to array
+        contactList.setListData(contactsArr);
+    }
 
     private void addListeners() {
         addReceiverFromOnlineUsersBtn.addActionListener(new ActionListener() {
@@ -373,7 +376,6 @@ public class ClientMainGUI extends JFrame
                     User[] contactsArr = contacts.toArray(new User[0]); // convert arrayList to array
                     contactList.setListData(contactsArr);
 
-                    // TODO : call controller and save contacts somewhere
                     controller.saveNewContact(selectedUser);
                 }
             }

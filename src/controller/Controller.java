@@ -31,12 +31,12 @@ public class Controller {
 
                 client = new Client("127.0.0.1", 2343, this); // skapar ny Client-instans
 
-                ArrayList<User> savedContacts = contacts.fetchContactsFromFile();
-
-                clientMainGUI = new ClientMainGUI(this, user, savedContacts); // öppna klient fönstret
+                clientMainGUI = new ClientMainGUI(this, user); // öppna klient fönstret
                 clientGUI.closeClientConnectionWindow();
 
-//                clientMainGUI.updateContactsJList(savedContacts);
+                ArrayList<User> savedContacts = contacts.fetchContactsFromFile();
+                clientMainGUI.updateContactsJList(savedContacts);
+                clientMainGUI.setContacts(savedContacts);
 
                 client.sendUserToServer(user);
                 break;
