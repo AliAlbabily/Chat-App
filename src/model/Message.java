@@ -41,17 +41,17 @@ public class Message implements Serializable {
     }
 
     // filter the current array of receivers and keep only the given user
-//    public User[] filterReceivers(User offlineUserToKeep) {
-//        User[] tempArray = new User[1]; // new array of receivers
-//
-//        for( User userReceiver :  arrayOfReceivers ) {
-//            if( userReceiver.getUsername().equals(offlineUserToKeep.getUsername()) ) {
-//                tempArray[0] = userReceiver;
-//            }
-//        }
-//
-//        return tempArray;
-//    }
+    public User[] filterReceivers(User offlineUserToKeep, User[] receiversToFilter) {
+        User[] tempArray = new User[1]; // new array of receivers
+
+        for( User userReceiver : receiversToFilter ) {
+            if( userReceiver.getUsername().equals(offlineUserToKeep.getUsername()) ) {
+                tempArray[0] = userReceiver;
+            }
+        }
+
+        return tempArray;
+    }
 
     //<editor-fold desc="Getters and setters">
     public ImageIcon GetUserPicture()

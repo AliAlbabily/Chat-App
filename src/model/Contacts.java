@@ -32,7 +32,12 @@ public class Contacts {
     public ArrayList<User> fetchContactsFromFile() {
         try (ObjectInputStream in = new ObjectInputStream(new BufferedInputStream(new FileInputStream(contactsFile)))) {
             contacts = (ArrayList<User>) in.readObject();
-        } catch (IOException | ClassNotFoundException e) {
+        }
+        catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
 

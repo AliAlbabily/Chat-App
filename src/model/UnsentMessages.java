@@ -10,7 +10,6 @@ public class UnsentMessages {
     // Hämta ArrayList - om null skapa en och placera i unsend
     // Lägga till Message i ArrayList
     public synchronized void put(User user, Message message){
-
         if(getUnsentMessages(user) == null) { // if a user doesn't have an array list (unsent messages)
             ArrayList<Message> userUnsentMessages = new ArrayList<>(); // create a new array list
             userUnsentMessages.add(message); // save message in the new array list
@@ -20,7 +19,7 @@ public class UnsentMessages {
             getUnsentMessages(user).add(message); // add a new message to the array list of the given user
         }
 
-        System.out.println("UnsentMessages: " + unsent.get(user).size());
+        System.out.println("UnsentMessages: " + unsent.size());
     }
 
     public synchronized ArrayList<Message> getUnsentMessages(User user) {

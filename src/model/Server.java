@@ -78,6 +78,8 @@ public class Server {
             }
             catch (IOException | ClassNotFoundException e) {
                 try {
+                    ois.close();
+                    oos.close();
                     socket.close();
                     System.out.println("Client disconnected!");
                     globalOnlineUsers.getHashMapList().remove(key); // tar bort användaren som avslutar sin anslutning från listan
@@ -122,10 +124,11 @@ public class Server {
     }
 
     private void checkIfUserHasUnsentMessages(User onlineUser) {
+        User[] keysArr = unsentMessagesObj.getUnsentHashMap().keySet().toArray(new User[0]);
 
-        for ( User key : unsentMessagesObj.getUnsentHashMap().keySet() ) {
-            if (onlineUser.getUsername().equals( key.getUsername() )) { // check if online user exists in the hashmap (unsent)
-                ArrayList<Message> userUnsentMessages = unsentMessagesObj.getUnsentMessages(key);
+        for ( int i = 0; i < keysArr.length; i++ ) {
+            if (onlineUser.getUsername().equals( keysArr[i].getUsername() )) { // check if online user exists in the hashmap (unsent)
+                ArrayList<Message> userUnsentMessages = unsentMessagesObj.getUnsentMessages(keysArr[i]);
 
                 userUnsentMessages.forEach( message -> {
                     try {
@@ -135,7 +138,7 @@ public class Server {
                     }
                 });
 
-                unsentMessagesObj.getUnsentHashMap().remove(key); // clear the saved messages for the user that was offline
+                unsentMessagesObj.getUnsentHashMap().remove(keysArr[i]); // clear the saved messages for the user that was offline
             }
         }
     }
@@ -151,13 +154,18 @@ public class Server {
                     System.out.println("Client is offline");
 
                     // FIXME :
-//                    User[] filteredReceivers = message.filterReceivers(user);
-//                    message.setArrayOfReceivers(filteredReceivers);
+//                    System.out.println("\nServer (before filter): " + message.getArrayOfReceivers().length + "\n");
+
+                    User[] filteredReceivers = message.filterReceivers(user, receivers);
+                    message.setArrayOfReceivers(filteredReceivers);
+
+//                    System.out.println("\nServer (after filter): " + message.getArrayOfReceivers().length + "\n");
+//                    System.out.println("Server (after filter - username): " + filteredReceivers[0] + "\n");
                     //
 
                     unsentMessagesObj.put(user, message);
                 }
-                if (client.getSocket().isConnected()) {
+                else if (client.getSocket().isConnected()) {
                     System.out.println("client is online");
 
                     client.getOos().writeObject(message);
