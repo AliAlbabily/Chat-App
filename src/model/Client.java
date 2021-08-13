@@ -13,7 +13,6 @@ public class Client extends Thread {
     private ObjectInputStream ois;
 
     private ArrayList<User> onlineUsers = new ArrayList<>();
-    private ArrayList<User> contacts = new ArrayList<>();
 
     private final Controller controller;
 

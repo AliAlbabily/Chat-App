@@ -9,8 +9,7 @@ import javax.swing.border.Border;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -189,6 +188,18 @@ public class ClientMainGUI extends JFrame
 
         messageBox = new JTextField();
         messageBox.setBounds(30, 90, 470, 50);
+        messageBox.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER)
+                {
+                    message = messageBox.getText();
+                    controller.buttonPressed(ButtonType.Send);
+                    uploadedImage = null;
+                    insertedImageLabel.setText("");
+                }
+            }
+        });
 
         sendButton = new JButton("Send Message");
         sendButton.setBounds(30, 210, 325, 50);
@@ -233,6 +244,7 @@ public class ClientMainGUI extends JFrame
             }
         });
 
+
         southPanel.add(receiversNamesLabel);
         southPanel.add(messageBox);
         southPanel.add(insertedImageLabel);
@@ -253,6 +265,10 @@ public class ClientMainGUI extends JFrame
 
     public ArrayList<User> getSelectedUsers() {
         return selectedUsers;
+    }
+
+    public void setContacts(ArrayList<User> contacts) {
+        this.contacts = contacts;
     }
 
     private void updateChatLogs(Message message) {
@@ -305,6 +321,11 @@ public class ClientMainGUI extends JFrame
         } else { receiversNamesLabel.setText("Receivers: "); }
     }
 
+    public void updateContactsJList(ArrayList<User> contacts) {
+        User[] contactsArr = contacts.toArray(new User[0]); // convert arrayList to array
+        contactList.setListData(contactsArr);
+    }
+
     private void addListeners() {
         addReceiverFromOnlineUsersBtn.addActionListener(new ActionListener() {
             @Override
@@ -354,7 +375,16 @@ public class ClientMainGUI extends JFrame
                     contacts.add(selectedUser);
                     User[] contactsArr = contacts.toArray(new User[0]); // convert arrayList to array
                     contactList.setListData(contactsArr);
+
+                    controller.saveNewContact(selectedUser);
                 }
+            }
+        });
+
+        removeContactBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.printUsersData(); // FIXME: temporärt!!
             }
         });
     }

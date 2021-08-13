@@ -9,6 +9,8 @@ import javax.swing.border.CompoundBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -54,6 +56,15 @@ public class ClientGUI extends JFrame implements ActionListener {
 
         JLabel usernameLabel = new JLabel("Username");
         userText = new JTextField();
+        userText.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+               if (e.getKeyCode() == KeyEvent.VK_ENTER)
+               {
+                   controller.buttonPressed(ButtonType.Connect);
+               }
+            }
+        });
         JLabel imageText = new JLabel("Profile Picture");
         imageBox = new JComboBox(images);
 
