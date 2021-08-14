@@ -1,16 +1,18 @@
 package view;
 
+import model.Message;
+
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class Logs
+public class ServerLogsGUI
 {
     private JTextField timestamp1;
     private JTextField timestamp2;
-    private JList<String> log;
+    private JList<Message> log;
 
     private JButton checkBtn;
     private JButton saveBtn;
@@ -22,7 +24,7 @@ public class Logs
     private JLabel timeStamplbl2;
     private Font fontlbl = new Font("Serif", Font.PLAIN, 25);
 
-    public Logs()
+    public ServerLogsGUI()
     {
         initializeComponents();
     }
@@ -108,7 +110,11 @@ public class Logs
         frame.add(mainPanel);
     }
 
+    public void updateLogsJList(Message[] messagesToBeLogged) {
+        log.setListData(messagesToBeLogged);
+    }
+
 //    public static void main(String[] args) {
-//        Logs logs = new Logs();
+//        ServerLogsGUI logs = new ServerLogsGUI();
 //    }
 }

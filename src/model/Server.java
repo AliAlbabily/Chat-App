@@ -1,5 +1,7 @@
 package model;
 
+import view.ServerLogsGUI;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -9,8 +11,12 @@ public class Server {
 
     private Clients globalOnlineUsers = new Clients(); // lista av anslutna användare (online users)
     private UnsentMessages unsentMessagesObj = new UnsentMessages();
+    private ServerLogsGUI serverLogsGUI;
+
+    private ArrayList<Message> loggedMessages = new ArrayList<>();
 
     public Server(int port) throws IOException {
+        serverLogsGUI = new ServerLogsGUI(); // open Server logs window
         new Connection(port).start();
     }
 
@@ -72,6 +78,7 @@ public class Server {
                     else if(objReceived instanceof Message) {
                         Message messageReceived = (Message)objReceived;
                         sendMessageToReceivers(messageReceived);
+                        logMessage(messageReceived);
                     }
 
                 }
@@ -180,5 +187,11 @@ public class Server {
         } else {
             System.out.println("Error");
         }
+    }
+
+    private void logMessage(Message receivedMessage) {
+        loggedMessages.add(receivedMessage); // log every received message by the server
+        Message[] loggedMessagesArr = loggedMessages.toArray(new Message[0]); // convert the arraylist to array
+        serverLogsGUI.updateLogsJList(loggedMessagesArr); // update the gui component
     }
 }
