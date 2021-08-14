@@ -1,7 +1,6 @@
 package view;
 
 import model.Message;
-import model.User;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -64,23 +63,18 @@ public class ServerLogsGUI
         mainPanel.setBackground(Color.lightGray);
 
         //Skapar timestamp lbls
-//        timeStamplbl1 = new JLabel("From:");
         timeStamplbl1.setBounds(33,10, 100, 50);
         timeStamplbl1.setFont(fontlbl);
         timeStamplbl1.setBackground(Color.black);
 
-//        timestamp1 = new JTextField("yyyy-MM-dd HH:mm");
         timestamp1.setBounds(33, 60, 120, 25);
 
-  //      timeStamplbl2 = new JLabel("To:");
         timeStamplbl2.setBounds(213,10, 100, 50);
         timeStamplbl2.setFont(fontlbl);
         timeStamplbl2.setBackground(Color.black);
 
-       // timestamp2 = new JTextField("yyyy-MM-dd HH:mm");
         timestamp2.setBounds(213, 60, 120, 25);
 
-    //    checkBtn = new JButton("Check");
         checkBtn.setBounds(392, 60, 120, 25);
         checkBtn.addActionListener(new ActionListener() {
             @Override
@@ -90,7 +84,6 @@ public class ServerLogsGUI
             }
         });
 
-    //    saveBtn = new JButton("Save");
         saveBtn.setBounds(225, 510, 100, 50);
         saveBtn.addActionListener(new ActionListener() {
             @Override
@@ -164,9 +157,4 @@ public class ServerLogsGUI
         String [] messageList = tempArrayList.toArray(new String[0]);
         updateLogsJList(messageList);
     }
-
-
-//    public static void main(String[] args) {
-//        ServerLogsGUI logs = new ServerLogsGUI();
-//    }
 }

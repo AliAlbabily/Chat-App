@@ -29,7 +29,7 @@ public class Controller {
                 ImageIcon imageIcon = clientGUI.getImageIcon();
                 user = new User(username, imageIcon); // skapar ny User-instans
 
-                client = new Client("127.0.0.1", 2343, this); // skapar ny Client-instans
+                client = new Client("25.82.118.228", 2343, this); // skapar ny Client-instans
 
                 clientMainGUI = new ClientMainGUI(this, user); // öppna klient fönstret
                 clientGUI.closeClientConnectionWindow();

@@ -4,8 +4,7 @@ import javax.swing.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.Date;
+
 
 public class Message implements Serializable {
     private User sender;
