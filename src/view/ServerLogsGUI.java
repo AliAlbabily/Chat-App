@@ -14,18 +14,18 @@ import java.util.ArrayList;
 
 public class ServerLogsGUI
 {
-    private JTextField timestamp1;
-    private JTextField timestamp2;
+    private JTextField timestamp1 = new JTextField("yyyy-MM-dd HH:mm");
+    private JTextField timestamp2 =  new JTextField("yyyy-MM-dd HH:mm");;
     private JList<String> log;
 
-    private JButton checkBtn;
-    private JButton saveBtn;
+    private JButton checkBtn = new JButton("Check");;
+    private JButton saveBtn = new JButton("Save");;
 
     private JFrame frame;
     private JPanel mainPanel;
 
-    private JLabel timeStamplbl1;
-    private JLabel timeStamplbl2;
+    private JLabel  timeStamplbl1 = new JLabel("From:");
+    private JLabel timeStamplbl2 = new JLabel("To:");;
     private Font fontlbl = new Font("Serif", Font.PLAIN, 25);
 
     private Message[] loggedMessages; // FIXME : for future use
@@ -64,23 +64,23 @@ public class ServerLogsGUI
         mainPanel.setBackground(Color.lightGray);
 
         //Skapar timestamp lbls
-        timeStamplbl1 = new JLabel("From:");
+//        timeStamplbl1 = new JLabel("From:");
         timeStamplbl1.setBounds(33,10, 100, 50);
         timeStamplbl1.setFont(fontlbl);
         timeStamplbl1.setBackground(Color.black);
 
-        timestamp1 = new JTextField("yyyy-MM-dd HH:mm");
+//        timestamp1 = new JTextField("yyyy-MM-dd HH:mm");
         timestamp1.setBounds(33, 60, 120, 25);
 
-        timeStamplbl2 = new JLabel("To:");
+  //      timeStamplbl2 = new JLabel("To:");
         timeStamplbl2.setBounds(213,10, 100, 50);
         timeStamplbl2.setFont(fontlbl);
         timeStamplbl2.setBackground(Color.black);
 
-        timestamp2 = new JTextField("yyyy-MM-dd HH:mm");
+       // timestamp2 = new JTextField("yyyy-MM-dd HH:mm");
         timestamp2.setBounds(213, 60, 120, 25);
 
-        checkBtn = new JButton("Check");
+    //    checkBtn = new JButton("Check");
         checkBtn.setBounds(392, 60, 120, 25);
         checkBtn.addActionListener(new ActionListener() {
             @Override
@@ -90,7 +90,7 @@ public class ServerLogsGUI
             }
         });
 
-        saveBtn = new JButton("Save");
+    //    saveBtn = new JButton("Save");
         saveBtn.setBounds(225, 510, 100, 50);
         saveBtn.addActionListener(new ActionListener() {
             @Override
