@@ -1,28 +1,35 @@
 package view;
 
+import model.Message;
+
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 
-public class Logs
+public class ServerLogsGUI
 {
-    private JTextField timestamp1;
-    private JTextField timestamp2;
+    private JTextField timestamp1 = new JTextField("yyyy-MM-dd HH:mm");
+    private JTextField timestamp2 =  new JTextField("yyyy-MM-dd HH:mm");;
     private JList<String> log;
 
-    private JButton checkBtn;
-    private JButton saveBtn;
+    private JButton checkBtn = new JButton("Check");;
+    private JButton saveBtn = new JButton("Save");;
 
     private JFrame frame;
     private JPanel mainPanel;
 
-    private JLabel timeStamplbl1;
-    private JLabel timeStamplbl2;
+    private JLabel  timeStamplbl1 = new JLabel("From:");
+    private JLabel timeStamplbl2 = new JLabel("To:");;
     private Font fontlbl = new Font("Serif", Font.PLAIN, 25);
 
-    public Logs()
+    private Message[] loggedMessages; // FIXME : for future use
+
+    public ServerLogsGUI()
     {
         initializeComponents();
     }
@@ -44,6 +51,7 @@ public class Logs
         frame.setLocationRelativeTo(null); // window gets placed on the middle of the screen
     }
 
+
     public void createMainPanel()
     {
         Border blackline = BorderFactory.createLineBorder(Color.black);
@@ -55,32 +63,27 @@ public class Logs
         mainPanel.setBackground(Color.lightGray);
 
         //Skapar timestamp lbls
-        timeStamplbl1 = new JLabel("From:");
         timeStamplbl1.setBounds(33,10, 100, 50);
         timeStamplbl1.setFont(fontlbl);
         timeStamplbl1.setBackground(Color.black);
 
-        timestamp1 = new JTextField(" ~ Date ~");
         timestamp1.setBounds(33, 60, 120, 25);
 
-        timeStamplbl2 = new JLabel("To:");
         timeStamplbl2.setBounds(213,10, 100, 50);
         timeStamplbl2.setFont(fontlbl);
         timeStamplbl2.setBackground(Color.black);
 
-        timestamp2 = new JTextField(" ~ Date ~");
         timestamp2.setBounds(213, 60, 120, 25);
 
-        checkBtn = new JButton("Check");
         checkBtn.setBounds(392, 60, 120, 25);
         checkBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                filterByTime();
                 //TODO implementera fuktionalitet här
             }
         });
 
-        saveBtn = new JButton("Save");
         saveBtn.setBounds(225, 510, 100, 50);
         saveBtn.addActionListener(new ActionListener() {
             @Override
@@ -108,7 +111,50 @@ public class Logs
         frame.add(mainPanel);
     }
 
-//    public static void main(String[] args) {
-//        Logs logs = new Logs();
-//    }
+    public void updateLogs(Message[] messagesToBeLogged) {
+        loggedMessages = messagesToBeLogged; // save current logged messages in view
+
+        String[] tempArr = new String[messagesToBeLogged.length];
+
+        for ( int i = 0; i < messagesToBeLogged.length; i++ ) {
+            // covert array of messages to array of Strings
+            tempArr[i] = messagesToBeLogged[i].printMessageInfoWithTime( messagesToBeLogged[i].getTimeReceivedByServer() );
+        }
+
+        updateLogsJList(tempArr);
+    }
+
+    private void updateLogsJList(String[] messages) {
+        log.setListData(messages);
+    }
+
+    private void filterByTime(){
+        String dateStart = timestamp1.getText();
+        String dateEnd = timestamp2.getText();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        LocalDateTime dateTimeOne = null;
+        LocalDateTime dateTimeTwo = null;
+        try{
+             dateTimeOne = LocalDateTime.parse(dateStart,formatter);
+             dateTimeTwo = LocalDateTime.parse(dateEnd,formatter);
+
+        }catch (Exception e){
+            System.err.println(e);
+        }
+      
+        ArrayList<String> tempArrayList = new ArrayList<>();
+
+        try{
+            for(Message message:loggedMessages){
+                if(message.getTimeReceivedByServer().isBefore(dateTimeTwo) && message.getTimeReceivedByServer().isAfter(dateTimeOne)) {
+                    tempArrayList.add(message.printMessageInfoWithTime(message.getTimeReceivedByServer()));
+                }
+        }
+        }catch (Exception e){
+            System.err.println(e);
+        }
+
+        String [] messageList = tempArrayList.toArray(new String[0]);
+        updateLogsJList(messageList);
+    }
 }

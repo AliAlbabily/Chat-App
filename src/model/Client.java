@@ -4,6 +4,7 @@ import controller.Controller;
 
 import java.io.*;
 import java.net.Socket;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class Client extends Thread {
@@ -47,7 +48,10 @@ public class Client extends Thread {
                     else if(objReceived instanceof Message) {
                         Message messageReceived = (Message)objReceived;
                         System.out.println(messageReceived.GetUser().toString() + ": " + messageReceived.getMessage());
-                        checkMessage(messageReceived);
+
+                        Message messageWithTime = getReceivedByClientTime(messageReceived);
+                        updateChat(messageWithTime);
+
                     }
 
                 } catch (IOException | ClassNotFoundException e) {
@@ -76,7 +80,7 @@ public class Client extends Thread {
         }
     }
 
-    private void checkMessage(Message message) {
+    private void updateChat(Message message) {
         if (message.getMessage().equals("") && message.getSentImage() == null) { // no text && no image
             // JOptionPane.showMessageDialog(null,"Du måste skriva något för att skicka.");
             System.out.println("You can't send an empty message!");
@@ -91,4 +95,11 @@ public class Client extends Thread {
             controller.updateChatGUI(message.GetUser(), message.getSentImage());
         }
     }
+
+    private Message getReceivedByClientTime(Message message) {
+        LocalDateTime now = LocalDateTime.now(); // time now
+        message.setTimeReceivedByClient(now); // set a new time to the message
+        return message;
+    }
+
 }

@@ -1,16 +1,23 @@
 package model;
 
+import view.ServerLogsGUI;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class Server {
 
     private Clients globalOnlineUsers = new Clients(); // lista av anslutna användare (online users)
     private UnsentMessages unsentMessagesObj = new UnsentMessages();
+    private ServerLogsGUI serverLogsGUI;
+
+    private ArrayList<Message> loggedMessages = new ArrayList<>();
 
     public Server(int port) throws IOException {
+        serverLogsGUI = new ServerLogsGUI(); // open Server logs window
         new Connection(port).start();
     }
 
@@ -71,7 +78,11 @@ public class Server {
                     }
                     else if(objReceived instanceof Message) {
                         Message messageReceived = (Message)objReceived;
-                        sendMessageToReceivers(messageReceived);
+
+                        Message messageWithTime = getReceivedByServerTime(messageReceived);
+                        //
+                        sendMessageToReceivers(messageWithTime);
+                        logMessage(messageWithTime);
                     }
 
                 }
@@ -180,5 +191,17 @@ public class Server {
         } else {
             System.out.println("Error");
         }
+    }
+
+    private void logMessage(Message receivedMessage) {
+        loggedMessages.add(receivedMessage); // log every received message by the server
+        Message[] loggedMessagesArr = loggedMessages.toArray(new Message[0]); // convert the arraylist to array
+        serverLogsGUI.updateLogs(loggedMessagesArr); // update the gui component
+    }
+
+    private Message getReceivedByServerTime(Message message) {
+        LocalDateTime now = LocalDateTime.now(); // time now
+        message.setReceivedByServerTime(now); // set a new time to the message
+        return message;
     }
 }

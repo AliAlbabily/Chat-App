@@ -2,16 +2,17 @@ package model;
 
 import javax.swing.*;
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 
 public class Message implements Serializable {
     private User sender;
     private String message;
     private ImageIcon sentImage;
     private User[] arrayOfReceivers = new User[5];
-    private Date timeReceivedByServer;
-    private Date timeReceivedByClient;
+    private LocalDateTime timeReceivedByServer;
+    private LocalDateTime timeReceivedByClient;
 
     public Message(User user, String message)
     {
@@ -53,6 +54,11 @@ public class Message implements Serializable {
         return tempArray;
     }
 
+    public String printMessageInfoWithTime(LocalDateTime time) {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        return toString() + " | Received at: " + dtf.format(time);
+    }
+
     //<editor-fold desc="Getters and setters">
     public ImageIcon GetUserPicture()
     {
@@ -83,6 +89,23 @@ public class Message implements Serializable {
 
     public void setArrayOfReceivers(User[] arrayOfReceivers) {
         this.arrayOfReceivers = arrayOfReceivers;
+    }
+
+    public LocalDateTime getTimeReceivedByServer() {
+        return timeReceivedByServer;
+    }
+
+    public LocalDateTime getTimeReceivedByClient(){
+        return timeReceivedByClient;
+    }
+
+
+    public void setReceivedByServerTime(LocalDateTime timeReceivedByServer) {
+        this.timeReceivedByServer = timeReceivedByServer;
+    }
+
+    public void setTimeReceivedByClient(LocalDateTime timeReceivedByClient){
+        this.timeReceivedByClient = timeReceivedByClient;
     }
 
     @Override
