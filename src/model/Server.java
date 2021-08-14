@@ -5,6 +5,7 @@ import view.ServerLogsGUI;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class Server {
@@ -77,8 +78,11 @@ public class Server {
                     }
                     else if(objReceived instanceof Message) {
                         Message messageReceived = (Message)objReceived;
-                        sendMessageToReceivers(messageReceived);
-                        logMessage(messageReceived);
+                        // TODO : save time
+                        Message messageWithTime = getReceivedByServerTime(messageReceived);
+                        //
+                        sendMessageToReceivers(messageWithTime);
+                        logMessage(messageWithTime);
                     }
 
                 }
@@ -192,6 +196,12 @@ public class Server {
     private void logMessage(Message receivedMessage) {
         loggedMessages.add(receivedMessage); // log every received message by the server
         Message[] loggedMessagesArr = loggedMessages.toArray(new Message[0]); // convert the arraylist to array
-        serverLogsGUI.updateLogsJList(loggedMessagesArr); // update the gui component
+        serverLogsGUI.updateLogs(loggedMessagesArr); // update the gui component
+    }
+
+    private Message getReceivedByServerTime(Message message) {
+        LocalDateTime now = LocalDateTime.now(); // time now
+        message.setReceivedByServerTime(now); // set a new time to the message
+        return message;
     }
 }

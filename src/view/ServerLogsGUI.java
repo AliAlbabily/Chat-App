@@ -12,7 +12,7 @@ public class ServerLogsGUI
 {
     private JTextField timestamp1;
     private JTextField timestamp2;
-    private JList<Message> log;
+    private JList<String> log;
 
     private JButton checkBtn;
     private JButton saveBtn;
@@ -23,6 +23,8 @@ public class ServerLogsGUI
     private JLabel timeStamplbl1;
     private JLabel timeStamplbl2;
     private Font fontlbl = new Font("Serif", Font.PLAIN, 25);
+
+    private Message[] loggedMessages; // FIXME : for future use
 
     public ServerLogsGUI()
     {
@@ -110,8 +112,21 @@ public class ServerLogsGUI
         frame.add(mainPanel);
     }
 
-    public void updateLogsJList(Message[] messagesToBeLogged) {
-        log.setListData(messagesToBeLogged);
+    public void updateLogs(Message[] messagesToBeLogged) {
+        loggedMessages = messagesToBeLogged; // save current logged messages in view
+
+        String[] tempArr = new String[messagesToBeLogged.length];
+
+        for ( int i = 0; i < messagesToBeLogged.length; i++ ) {
+            // covert array of messages to array of Strings
+            tempArr[i] = messagesToBeLogged[i].printMessageInfoWithTime( messagesToBeLogged[i].getTimeReceivedByServer() );
+        }
+
+        updateLogsJList(tempArr);
+    }
+
+    private void updateLogsJList(String[] messages) {
+        log.setListData(messages);
     }
 
 //    public static void main(String[] args) {
