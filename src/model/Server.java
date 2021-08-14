@@ -78,7 +78,7 @@ public class Server {
                     }
                     else if(objReceived instanceof Message) {
                         Message messageReceived = (Message)objReceived;
-                        // TODO : save time
+
                         Message messageWithTime = getReceivedByServerTime(messageReceived);
                         //
                         sendMessageToReceivers(messageWithTime);

@@ -96,8 +96,17 @@ public class Message implements Serializable {
         return timeReceivedByServer;
     }
 
+    public LocalDateTime getTimeReceivedByClient(){
+        return timeReceivedByClient;
+    }
+
+
     public void setReceivedByServerTime(LocalDateTime timeReceivedByServer) {
         this.timeReceivedByServer = timeReceivedByServer;
+    }
+
+    public void setTimeReceivedByClient(LocalDateTime timeReceivedByClient){
+        this.timeReceivedByClient = timeReceivedByClient;
     }
 
     @Override

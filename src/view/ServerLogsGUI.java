@@ -1,12 +1,16 @@
 package view;
 
 import model.Message;
+import model.User;
 
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 
 public class ServerLogsGUI
 {
@@ -48,6 +52,7 @@ public class ServerLogsGUI
         frame.setLocationRelativeTo(null); // window gets placed on the middle of the screen
     }
 
+
     public void createMainPanel()
     {
         Border blackline = BorderFactory.createLineBorder(Color.black);
@@ -80,6 +85,7 @@ public class ServerLogsGUI
         checkBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                filterByTime();
                 //TODO implementera fuktionalitet här
             }
         });
@@ -128,6 +134,30 @@ public class ServerLogsGUI
     private void updateLogsJList(String[] messages) {
         log.setListData(messages);
     }
+
+    private void filterByTime(){
+        String dateStart = timestamp1.getText();
+        String dateEnd = timestamp2.getText();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+        LocalDateTime dateTimeOne = LocalDateTime.parse(dateStart,formatter);
+        LocalDateTime dateTimeTwo = LocalDateTime.parse(dateEnd,formatter);
+        ArrayList<String> tempArrayList = new ArrayList<>();
+
+
+
+        for(Message message:loggedMessages){
+            if(message.getTimeReceivedByServer().isBefore(dateTimeTwo) && message.getTimeReceivedByServer().isAfter(dateTimeOne)){
+                tempArrayList.add(message.printMessageInfoWithTime(message.getTimeReceivedByServer()));
+            }
+            else{
+                System.out.println("Can't find any message in between these times");
+            }
+        }
+        String [] messageList = tempArrayList.toArray(new String[0]);
+        updateLogsJList(messageList);
+    }
+
 
 //    public static void main(String[] args) {
 //        ServerLogsGUI logs = new ServerLogsGUI();
