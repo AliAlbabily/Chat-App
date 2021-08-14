@@ -69,7 +69,7 @@ public class ServerLogsGUI
         timeStamplbl1.setFont(fontlbl);
         timeStamplbl1.setBackground(Color.black);
 
-        timestamp1 = new JTextField(" ~ Date ~");
+        timestamp1 = new JTextField("yyyy-MM-dd HH:mm");
         timestamp1.setBounds(33, 60, 120, 25);
 
         timeStamplbl2 = new JLabel("To:");
@@ -77,7 +77,7 @@ public class ServerLogsGUI
         timeStamplbl2.setFont(fontlbl);
         timeStamplbl2.setBackground(Color.black);
 
-        timestamp2 = new JTextField(" ~ Date ~");
+        timestamp2 = new JTextField("yyyy-MM-dd HH:mm");
         timestamp2.setBounds(213, 60, 120, 25);
 
         checkBtn = new JButton("Check");
@@ -139,21 +139,28 @@ public class ServerLogsGUI
         String dateStart = timestamp1.getText();
         String dateEnd = timestamp2.getText();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        LocalDateTime dateTimeOne = null;
+        LocalDateTime dateTimeTwo = null;
+        try{
+             dateTimeOne = LocalDateTime.parse(dateStart,formatter);
+             dateTimeTwo = LocalDateTime.parse(dateEnd,formatter);
 
-        LocalDateTime dateTimeOne = LocalDateTime.parse(dateStart,formatter);
-        LocalDateTime dateTimeTwo = LocalDateTime.parse(dateEnd,formatter);
+        }catch (Exception e){
+            System.err.println(e);
+        }
+      
         ArrayList<String> tempArrayList = new ArrayList<>();
 
-
-
-        for(Message message:loggedMessages){
-            if(message.getTimeReceivedByServer().isBefore(dateTimeTwo) && message.getTimeReceivedByServer().isAfter(dateTimeOne)){
-                tempArrayList.add(message.printMessageInfoWithTime(message.getTimeReceivedByServer()));
-            }
-            else{
-                System.out.println("Can't find any message in between these times");
-            }
+        try{
+            for(Message message:loggedMessages){
+                if(message.getTimeReceivedByServer().isBefore(dateTimeTwo) && message.getTimeReceivedByServer().isAfter(dateTimeOne)) {
+                    tempArrayList.add(message.printMessageInfoWithTime(message.getTimeReceivedByServer()));
+                }
         }
+        }catch (Exception e){
+            System.err.println(e);
+        }
+
         String [] messageList = tempArrayList.toArray(new String[0]);
         updateLogsJList(messageList);
     }
