@@ -16,7 +16,6 @@ import java.util.ArrayList;
 public class ClientMainGUI extends JFrame
 {
     private final Controller controller;
-    private final User user;
 
     //Komponenter
     private JPanel leftChatPanel;
@@ -41,18 +40,20 @@ public class ClientMainGUI extends JFrame
     private Font labelFont = new Font("", Font.PLAIN, 25);
     private ImageIcon uploadedImage = null;
     private String message;
+
+    // TODO :
     private ArrayList<User> selectedUsers = new ArrayList<>(); // receivers
     private ArrayList<User> contacts = new ArrayList<>();
     private Message[] chatLogs = {};
     private User selectedContact = null;
+    //
 
-    public ClientMainGUI(Controller controller, User user)
+    public ClientMainGUI(Controller controller)
     {
         this.controller = controller;
-        this.user = user;
         InitializePanels();
         addListeners();
-        selectedUsers.add(user); // user (the owner of the gui) is always selected by default
+        selectedUsers.add(controller.getUser()); // user (the owner of the gui) is always selected as a receiver by default
     }
 
     public void InitializePanels()
@@ -370,7 +371,7 @@ public class ClientMainGUI extends JFrame
             @Override
             public void actionPerformed(ActionEvent e) {
                 selectedUsers.clear(); // remove all selected users inside the list
-                selectedUsers.add(user); // user (the owner of the gui) is always selected by default
+                selectedUsers.add(controller.getUser()); // user (the owner of the gui) is always selected as a receiver by default
                 updateReceiversLabel();
             }
         });
@@ -380,7 +381,7 @@ public class ClientMainGUI extends JFrame
             public void actionPerformed(ActionEvent e) {
                 User selectedUser = onlineList.getSelectedValue();
 
-                if(selectedUser.getUsername().equals(user.getUsername())) {
+                if(selectedUser.getUsername().equals(controller.getUser().getUsername())) {
                     JOptionPane.showMessageDialog(null, "Cannot add yourself to contact list!");
                 }
                 else if(contacts.contains(selectedUser)) {

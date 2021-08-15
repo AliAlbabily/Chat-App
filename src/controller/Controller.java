@@ -29,9 +29,9 @@ public class Controller {
                 ImageIcon imageIcon = clientGUI.getImageIcon();
                 user = new User(username, imageIcon); // skapar ny User-instans
 
-                client = new Client("25.82.118.228", 2343, this); // skapar ny Client-instans
+                client = new Client("127.0.0.1", 2343, this); // skapar ny Client-instans
 
-                clientMainGUI = new ClientMainGUI(this, user); // öppna klient fönstret
+                clientMainGUI = new ClientMainGUI(this); // öppna klient fönstret
                 clientGUI.closeClientConnectionWindow();
 
                 ArrayList<User> savedContacts = contacts.fetchContactsFromFile();
@@ -78,4 +78,12 @@ public class Controller {
     {
         contacts.removeContactInFile(user);
     }
+
+    //<editor-fold desc="Getters and setters">
+    public User getUser() {
+        return user;
+    }
+
+
+    //</editor-fold>
 }

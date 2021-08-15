@@ -62,9 +62,9 @@ public class Client extends Thread {
         }
     }
 
-    public void sendUserToServer(User user) {
+    public void sendUserToServer(User newUser) {
         try {
-            oos.writeObject(user);
+            oos.writeObject(newUser);
             oos.flush();
         } catch (IOException e) {
             e.printStackTrace();
