@@ -73,4 +73,9 @@ public class Controller {
     public void saveNewContact(User user) {
         contacts.saveNewContactInFile(user);
     }
+
+    public void removeContact(User user)
+    {
+        contacts.removeContactInFile(user);
+    }
 }
