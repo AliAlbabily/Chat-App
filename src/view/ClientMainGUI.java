@@ -41,8 +41,7 @@ public class ClientMainGUI extends JFrame
     private ImageIcon uploadedImage = null;
     private String message;
 
-    // TODO :
-    private ArrayList<User> selectedUsers = new ArrayList<>(); // receivers
+    // FIXME :
     private ArrayList<User> contacts = new ArrayList<>();
     private Message[] chatLogs = {};
     //
@@ -52,7 +51,7 @@ public class ClientMainGUI extends JFrame
         this.controller = controller;
         InitializePanels();
         addListeners();
-        selectedUsers.add(controller.getUser()); // user (the owner of the gui) is always selected as a receiver by default
+        controller.addSelectedUserToReceivers(controller.getUser()); // user (the owner of the gui) is always selected as a receiver by default
     }
 
     public void InitializePanels()
@@ -267,10 +266,6 @@ public class ClientMainGUI extends JFrame
         return uploadedImage;
     }
 
-    public ArrayList<User> getSelectedUsers() {
-        return selectedUsers;
-    }
-
     public void setContacts(ArrayList<User> contacts) {
         this.contacts = contacts;
     }
@@ -314,10 +309,10 @@ public class ClientMainGUI extends JFrame
     }
 
     private void updateReceiversLabel() {
-        User[] selectedUsersArr = selectedUsers.toArray(new User[0]);
+        User[] selectedUsersArr = controller.getSelectedUsers().toArray(new User[0]);
         String selectedUsersStr = "Receivers: ";
 
-        if(!selectedUsers.isEmpty()) { // when the list is not empty
+        if(!controller.getSelectedUsers().isEmpty()) { // when the list is not empty
             for (User user : selectedUsersArr) {
                 selectedUsersStr = selectedUsersStr + user.toString() + " / ";
                 receiversNamesLabel.setText(selectedUsersStr);
@@ -336,8 +331,8 @@ public class ClientMainGUI extends JFrame
             public void actionPerformed(ActionEvent e) {
                 User selectedUser = onlineList.getSelectedValue();
 
-                if(!selectedUsers.contains(selectedUser)) { // if the selected user hasn't been added yet as a receiver
-                    selectedUsers.add(selectedUser); // save the selected user in a list
+                if(!controller.getSelectedUsers().contains(selectedUser)) { // if the selected user hasn't been added yet as a receiver
+                    controller.addSelectedUserToReceivers(selectedUser);
                     updateReceiversLabel();
                 } else { JOptionPane.showMessageDialog(null, "Already added as a receiver!"); }
             }
@@ -348,8 +343,8 @@ public class ClientMainGUI extends JFrame
             public void actionPerformed(ActionEvent e) {
                 User selectedUser = contactList.getSelectedValue();
 
-                if(!selectedUsers.contains(selectedUser)) { // if the selected user hasn't been added yet as a receiver
-                    selectedUsers.add(selectedUser); // save the selected user in a list
+                if(!controller.getSelectedUsers().contains(selectedUser)) { // if the selected user hasn't been added yet as a receiver
+                    controller.addSelectedUserToReceivers(selectedUser);
                     updateReceiversLabel();
                 } else { JOptionPane.showMessageDialog(null, "Already added as a receiver!"); }
             }
@@ -358,8 +353,8 @@ public class ClientMainGUI extends JFrame
         clearAllReceiversBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                selectedUsers.clear(); // remove all selected users inside the list
-                selectedUsers.add(controller.getUser()); // user (the owner of the gui) is always selected as a receiver by default
+                controller.clearAllSelectedReceivers();
+                controller.addSelectedUserToReceivers(controller.getUser()); // user (the owner of the gui) is always selected as a receiver by default
                 updateReceiversLabel();
             }
         });

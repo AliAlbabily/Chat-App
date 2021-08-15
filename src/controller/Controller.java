@@ -15,6 +15,7 @@ public class Controller {
     private User user;
     private Client client;
     private Contacts contacts;
+    private ArrayList<User> selectedUsers = new ArrayList<>(); // receivers
 
     public Controller() {
         clientGUI = new ClientGUI(this);
@@ -42,10 +43,10 @@ public class Controller {
                 break;
             case Send:
                 String textMessage = clientMainGUI.getMessage();
-                User[] selectedUsers = clientMainGUI.getSelectedUsers().toArray(new User[0]);
+                User[] selectedUsersArr = selectedUsers.toArray(new User[0]);
                 ImageIcon uploadedImage = clientMainGUI.getUploadedImage();
 
-                Message newMessage = new Message(user, textMessage, uploadedImage, selectedUsers); // create a new Message-object
+                Message newMessage = new Message(user, textMessage, uploadedImage, selectedUsersArr); // create a new Message-object
                 client.sendMessageToServer(newMessage);
                 break;
             default:
@@ -79,11 +80,21 @@ public class Controller {
         contacts.removeContactInFile(user);
     }
 
+    public void addSelectedUserToReceivers(User selectedUser) {
+        selectedUsers.add(selectedUser); // save the selected user in the receivers-arraylist
+    }
+
+    public void clearAllSelectedReceivers() {
+        selectedUsers.clear(); // remove all selected users inside the receivers-arraylist
+    }
+
     //<editor-fold desc="Getters and setters">
     public User getUser() {
         return user;
     }
 
-
+    public ArrayList<User> getSelectedUsers() {
+        return selectedUsers;
+    }
     //</editor-fold>
 }
