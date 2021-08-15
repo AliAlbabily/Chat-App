@@ -43,6 +43,7 @@ public class ClientGUI extends JFrame implements ActionListener {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(panel);
         frame.setResizable(false);
+        frame.setLocationRelativeTo(null); // window gets placed on the middle of the screen
 
 
         JPanel panelTop = new JPanel();
