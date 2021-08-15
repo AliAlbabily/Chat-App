@@ -45,7 +45,6 @@ public class ClientMainGUI extends JFrame
     private ArrayList<User> selectedUsers = new ArrayList<>(); // receivers
     private ArrayList<User> contacts = new ArrayList<>();
     private Message[] chatLogs = {};
-    private User selectedContact = null;
     //
 
     public ClientMainGUI(Controller controller)
@@ -152,17 +151,6 @@ public class ClientMainGUI extends JFrame
         contactList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); // makes sure that one list index is selected at a time
         contactList.setBorder(blackline);
         contactList.setFont(new Font("", Font.PLAIN,20));
-
-        //get selected user from contactlist
-        contactList.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                if (e.getValueIsAdjusting())
-                {
-                    selectedContact = contactList.getSelectedValue();
-                }
-            }
-        });
 
         User[] onlineUsersArr = {};
         onlineList = new JList(onlineUsersArr);
@@ -402,6 +390,7 @@ public class ClientMainGUI extends JFrame
                 System.out.println(contacts.size());
                 if (contacts.size()>0)
                 {
+                    User selectedContact = contactList.getSelectedValue(); //get selected user from contactlist
                     contacts.remove(selectedContact);
                     controller.removeContact(selectedContact);
                     updateContactsJList(contacts);
