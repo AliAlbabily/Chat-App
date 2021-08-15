@@ -27,10 +27,9 @@ public class ServerLogsGUI
     private JPanel mainPanel;
 
     private JLabel  timeStamplbl1 = new JLabel("From:");
-    private JLabel timeStamplbl2 = new JLabel("To:");;
-    private Font fontlbl = new Font("Serif", Font.PLAIN, 25);
+    private JLabel timeStamplbl2 = new JLabel("To:");
 
-    private Message[] loggedMessages; // FIXME : for future use
+    private Message[] loggedMessages;
 
     public ServerLogsGUI()
     {
@@ -57,8 +56,6 @@ public class ServerLogsGUI
 
     public void createMainPanel()
     {
-        Border blackline = BorderFactory.createLineBorder(Color.black);
-
         mainPanel = new JPanel();
         mainPanel.setBorder(BorderFactory.createLineBorder(Color.black));
         mainPanel.setBounds(18, 20,545, 570);
@@ -67,13 +64,13 @@ public class ServerLogsGUI
 
         //Skapar timestamp lbls
         timeStamplbl1.setBounds(33,10, 100, 50);
-        timeStamplbl1.setFont(fontlbl);
+        timeStamplbl1.setFont(new Font("", Font.PLAIN, 25));
         timeStamplbl1.setBackground(Color.black);
 
         timestamp1.setBounds(33, 60, 120, 25);
 
         timeStamplbl2.setBounds(213,10, 100, 50);
-        timeStamplbl2.setFont(fontlbl);
+        timeStamplbl2.setFont(new Font("", Font.PLAIN, 25));
         timeStamplbl2.setBackground(Color.black);
 
         timestamp2.setBounds(213, 60, 120, 25);
@@ -96,7 +93,7 @@ public class ServerLogsGUI
 
         log = new JList();
         log.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        log.setFont(fontlbl);
+        log.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 18));
 
         JScrollPane scrollPane = new JScrollPane(log);
         scrollPane.setBounds(33, 100, 480, 400);
