@@ -43,4 +43,17 @@ public class Contacts {
 
         return contacts;
     }
+
+    public void removeContactInFile(User user) {
+        ArrayList<User> contactsTemp = fetchContactsFromFile();
+
+        contactsTemp.remove(user); // removes the value from the list
+
+        try (ObjectOutputStream out = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(contactsFile)))) {
+            out.writeObject(contactsTemp);
+            out.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

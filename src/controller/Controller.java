@@ -74,7 +74,8 @@ public class Controller {
         contacts.saveNewContactInFile(user);
     }
 
-    public void printUsersData() {
-        contacts.fetchContactsFromFile().forEach( contact -> System.out.println(contact.toString()) );
+    public void removeContact(User user)
+    {
+        contacts.removeContactInFile(user);
     }
 }

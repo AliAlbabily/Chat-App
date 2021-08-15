@@ -7,6 +7,9 @@ import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -80,7 +83,6 @@ public class ServerLogsGUI
             @Override
             public void actionPerformed(ActionEvent e) {
                 filterByTime();
-                //TODO implementera fuktionalitet här
             }
         });
 
@@ -88,7 +90,7 @@ public class ServerLogsGUI
         saveBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //TODO implementera fuktionalitet här
+                saveChatlogsToTxt();
             }
         });
 
@@ -156,5 +158,21 @@ public class ServerLogsGUI
 
         String [] messageList = tempArrayList.toArray(new String[0]);
         updateLogsJList(messageList);
+    }
+
+    //Save to txt
+    private void saveChatlogsToTxt()
+    {
+        ListModel listModel = log.getModel();
+        try(BufferedWriter bw = new BufferedWriter(new FileWriter("files/chatlogs.txt")))
+        {
+            for (int i = 0; i<listModel.getSize();i++)
+            {
+                String log = (String) listModel.getElementAt(i) + "\n";
+                bw.write(log);
+            }
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
     }
 }

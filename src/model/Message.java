@@ -56,7 +56,16 @@ public class Message implements Serializable {
 
     public String printMessageInfoWithTime(LocalDateTime time) {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        return toString() + " | Received at: " + dtf.format(time);
+        String receiversStr = "";
+
+        if(arrayOfReceivers.length != 0) { // when the array is not empty
+            for ( int i = 0; i < arrayOfReceivers.length; i++ ) {
+                User userTemp = arrayOfReceivers[i];
+                receiversStr = receiversStr + userTemp.toString() + ", ";
+            }
+        }
+
+        return toString() + " | Sent to: " + receiversStr + "| Received by server at: " + dtf.format(time);
     }
 
     //<editor-fold desc="Getters and setters">

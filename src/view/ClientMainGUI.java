@@ -44,6 +44,7 @@ public class ClientMainGUI extends JFrame
     private ArrayList<User> selectedUsers = new ArrayList<>(); // receivers
     private ArrayList<User> contacts = new ArrayList<>();
     private Message[] chatLogs = {};
+    private User selectedContact = null;
 
     public ClientMainGUI(Controller controller, User user)
     {
@@ -142,6 +143,7 @@ public class ClientMainGUI extends JFrame
         removeContactBtn.setMargin(new Insets(1,1,1,1)); // changes the padding of the button
         removeContactBtn.setBounds(150, 280, 115, 50);
 
+
         Border blackline = BorderFactory.createLineBorder(Color.black);
         User[] contactsArr = contacts.toArray(new User[0]);
         contactList = new JList(contactsArr);
@@ -149,6 +151,17 @@ public class ClientMainGUI extends JFrame
         contactList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); // makes sure that one list index is selected at a time
         contactList.setBorder(blackline);
         contactList.setFont(new Font("", Font.PLAIN,20));
+
+        //get selected user from contactlist
+        contactList.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (e.getValueIsAdjusting())
+                {
+                    selectedContact = contactList.getSelectedValue();
+                }
+            }
+        });
 
         User[] onlineUsersArr = {};
         onlineList = new JList(onlineUsersArr);
@@ -197,6 +210,7 @@ public class ClientMainGUI extends JFrame
                     controller.buttonPressed(ButtonType.Send);
                     uploadedImage = null;
                     insertedImageLabel.setText("");
+                    messageBox.setText("");
                 }
             }
         });
@@ -240,6 +254,7 @@ public class ClientMainGUI extends JFrame
                     controller.buttonPressed(ButtonType.Send);
                     uploadedImage = null;
                     insertedImageLabel.setText("");
+                    messageBox.setText("");
                 }
             }
         });
@@ -375,7 +390,6 @@ public class ClientMainGUI extends JFrame
                     contacts.add(selectedUser);
                     User[] contactsArr = contacts.toArray(new User[0]); // convert arrayList to array
                     contactList.setListData(contactsArr);
-
                     controller.saveNewContact(selectedUser);
                 }
             }
@@ -384,7 +398,17 @@ public class ClientMainGUI extends JFrame
         removeContactBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                controller.printUsersData(); // FIXME: temporärt!!
+                System.out.println(contacts.size());
+                if (contacts.size()>0)
+                {
+                    contacts.remove(selectedContact);
+                    controller.removeContact(selectedContact);
+                    updateContactsJList(contacts);
+                }
+                else
+                {
+                    JOptionPane.showMessageDialog(null, "You have no contacts to delete.");
+                }
             }
         });
     }
