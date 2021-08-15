@@ -1,6 +1,6 @@
 package model;
 
-import view.ServerLogsGUI;
+import controller.ServerController;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -12,12 +12,12 @@ public class Server {
 
     private Clients globalOnlineUsers = new Clients(); // lista av anslutna användare (online users)
     private UnsentMessages unsentMessagesObj = new UnsentMessages();
-    private ServerLogsGUI serverLogsGUI;
+    private ServerController serverController;
 
     private ArrayList<Message> loggedMessages = new ArrayList<>();
 
-    public Server(int port) throws IOException {
-        serverLogsGUI = new ServerLogsGUI(); // open Server logs window
+    public Server(int port, ServerController serverController) throws IOException {
+        this.serverController = serverController;
         new Connection(port).start();
     }
 
@@ -73,14 +73,11 @@ public class Server {
                         key = (User)objReceived;
                         globalOnlineUsers.put((User)objReceived, this); // spara en referens av ClientHandler i hashmapen med sin motsvarande User
                         updateOnlineUsersList();
-
                         checkIfUserHasUnsentMessages((User)objReceived);
                     }
                     else if(objReceived instanceof Message) {
                         Message messageReceived = (Message)objReceived;
-
                         Message messageWithTime = getReceivedByServerTime(messageReceived);
-                        //
                         sendMessageToReceivers(messageWithTime);
                         logMessage(messageWithTime);
                     }
@@ -106,14 +103,6 @@ public class Server {
 
         public Socket getSocket() {
             return socket;
-        }
-    }
-
-    public static void main(String[] args) {
-        try {
-            new Server(2343);
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
@@ -196,12 +185,16 @@ public class Server {
     private void logMessage(Message receivedMessage) {
         loggedMessages.add(receivedMessage); // log every received message by the server
         Message[] loggedMessagesArr = loggedMessages.toArray(new Message[0]); // convert the arraylist to array
-        serverLogsGUI.updateLogs(loggedMessagesArr); // update the gui component
+        serverController.updateLogsGUI(loggedMessagesArr);
     }
 
     private Message getReceivedByServerTime(Message message) {
         LocalDateTime now = LocalDateTime.now(); // time now
         message.setReceivedByServerTime(now); // set a new time to the message
         return message;
+    }
+
+    public ArrayList<Message> getLoggedMessages() {
+        return loggedMessages;
     }
 }

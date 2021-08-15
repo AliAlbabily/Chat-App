@@ -1,9 +1,9 @@
 package view;
 
+import controller.ServerController;
 import model.Message;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,7 +17,7 @@ import java.util.ArrayList;
 public class ServerLogsGUI
 {
     private JTextField timestamp1 = new JTextField("yyyy-MM-dd HH:mm");
-    private JTextField timestamp2 =  new JTextField("yyyy-MM-dd HH:mm");;
+    private JTextField timestamp2 =  new JTextField("yyyy-MM-dd HH:mm");
     private JList<String> log;
 
     private JButton checkBtn = new JButton("Check");;
@@ -29,10 +29,11 @@ public class ServerLogsGUI
     private JLabel  timeStamplbl1 = new JLabel("From:");
     private JLabel timeStamplbl2 = new JLabel("To:");
 
-    private Message[] loggedMessages;
+    private ServerController serverController;
 
-    public ServerLogsGUI()
+    public ServerLogsGUI(ServerController serverController)
     {
+        this.serverController = serverController;
         initializeComponents();
     }
 
@@ -52,7 +53,6 @@ public class ServerLogsGUI
         frame.setVisible(true);
         frame.setLocationRelativeTo(null); // window gets placed on the middle of the screen
     }
-
 
     public void createMainPanel()
     {
@@ -111,8 +111,6 @@ public class ServerLogsGUI
     }
 
     public void updateLogs(Message[] messagesToBeLogged) {
-        loggedMessages = messagesToBeLogged; // save current logged messages in view
-
         String[] tempArr = new String[messagesToBeLogged.length];
 
         for ( int i = 0; i < messagesToBeLogged.length; i++ ) {
@@ -140,11 +138,12 @@ public class ServerLogsGUI
         }catch (Exception e){
             System.err.println(e);
         }
-      
+
         ArrayList<String> tempArrayList = new ArrayList<>();
+        Message[] tempLoggedMessages = serverController.getLoggedMessages().toArray(new Message[0]); // get and convert arraylist to array
 
         try{
-            for(Message message:loggedMessages){
+            for ( Message message : tempLoggedMessages ){
                 if(message.getTimeReceivedByServer().isBefore(dateTimeTwo) && message.getTimeReceivedByServer().isAfter(dateTimeOne)) {
                     tempArrayList.add(message.printMessageInfoWithTime(message.getTimeReceivedByServer()));
                 }

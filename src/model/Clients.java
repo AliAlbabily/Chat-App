@@ -11,13 +11,13 @@ public class Clients implements Serializable {
         clients.put(user,client);
     }
 
-    public synchronized Server.ClientHandler get(User user) { // TODO : använd denna metod istället för den inbyggda metoden i servern
+    public synchronized Server.ClientHandler get(User user) {
         return get(user);
     }
 
     // fler synchronized-metoder som behövs
 
-    public synchronized HashMap<User, Server.ClientHandler> getHashMapList() { // TODO : testa denna metod med flera användare
+    public synchronized HashMap<User, Server.ClientHandler> getHashMapList() {
         return clients;
     }
 
