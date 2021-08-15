@@ -44,6 +44,7 @@ public class ClientMainGUI extends JFrame
     private ArrayList<User> selectedUsers = new ArrayList<>(); // receivers
     private ArrayList<User> contacts = new ArrayList<>();
     private Message[] chatLogs = {};
+    private User selectedContact = null;
 
     public ClientMainGUI(Controller controller, User user)
     {
@@ -150,6 +151,14 @@ public class ClientMainGUI extends JFrame
         contactList.setBorder(blackline);
         contactList.setFont(new Font("", Font.PLAIN,20));
 
+        //get selected user from contactlist
+        contactList.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                selectedContact = contactList.getSelectedValue();
+            }
+        });
+
         User[] onlineUsersArr = {};
         onlineList = new JList(onlineUsersArr);
         onlineList.setBounds(30, 450, 235, 220);
@@ -197,6 +206,7 @@ public class ClientMainGUI extends JFrame
                     controller.buttonPressed(ButtonType.Send);
                     uploadedImage = null;
                     insertedImageLabel.setText("");
+                    messageBox.setText("");
                 }
             }
         });
@@ -240,6 +250,7 @@ public class ClientMainGUI extends JFrame
                     controller.buttonPressed(ButtonType.Send);
                     uploadedImage = null;
                     insertedImageLabel.setText("");
+                    messageBox.setText("");
                 }
             }
         });
@@ -384,7 +395,16 @@ public class ClientMainGUI extends JFrame
         removeContactBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                controller.printUsersData(); // FIXME: temporärt!!
+                System.out.println(contacts.size());
+                if (contacts.size()>0)
+                {
+                    contacts.remove(selectedContact);
+                    updateContactsJList(contacts);
+                }
+                else
+                {
+                    JOptionPane.showMessageDialog(null, "You have no contacts to delete.");
+                }
             }
         });
     }

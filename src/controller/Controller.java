@@ -73,8 +73,4 @@ public class Controller {
     public void saveNewContact(User user) {
         contacts.saveNewContactInFile(user);
     }
-
-    public void printUsersData() {
-        contacts.fetchContactsFromFile().forEach( contact -> System.out.println(contact.toString()) );
-    }
 }
