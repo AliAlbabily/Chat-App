@@ -12,6 +12,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class ClientMainGUI extends JFrame
 {
@@ -40,10 +41,6 @@ public class ClientMainGUI extends JFrame
     private Font labelFont = new Font("", Font.PLAIN, 25);
     private ImageIcon uploadedImage = null;
     private String message;
-
-    // FIXME :
-    private Message[] chatLogs = {};
-    //
 
     public ClientMainGUI(Controller controller)
     {
@@ -85,6 +82,7 @@ public class ClientMainGUI extends JFrame
         lblChatbox.setFont(labelFont);
 
         //Skapar chattbox
+        Message[] chatLogs = {};
         chatBox = new JList<>(chatLogs);
         chatBox.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         chatBox.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 18));
@@ -265,37 +263,36 @@ public class ClientMainGUI extends JFrame
         return uploadedImage;
     }
 
-    private void updateChatLogs(Message message) {
-        Message[] tmp = new Message[chatLogs.length+1];
-        for (int i = 0;i<chatLogs.length;i++) //Kopierar över de existerande meddelanden till en temporär array.
-        {
-            tmp[i] = chatLogs[i];
+    private Message[] updateChatLogs(Message message) { // TODO : behöver testas !!!
+        ListModel chatBoxListModel = chatBox.getModel(); // gets back what is inside chatbox-componenet (array)
+        Message[] tmpMessages = new Message[chatBoxListModel.getSize()];
+
+        for ( int i = 0; i < chatBoxListModel.getSize(); i++ ) {
+            tmpMessages[i] = (Message) chatBoxListModel.getElementAt(i); //Kopierar över de existerande meddelanden till en temporär array.
         }
 
-        tmp[chatLogs.length] = message; //Lägger in det nya meddelandet.
-        chatLogs = new Message[tmp.length];
-        for (int j = 0; j<tmp.length;j++) //Lägger tillbaka meddelanden tillsammans med det nya skapade.
-        {
-            chatLogs[j] = tmp[j];
-        }
+        ArrayList<Message> tempMessagesArrayList = new ArrayList<>(Arrays.asList(tmpMessages)); // convert array to arraylist
+        tempMessagesArrayList.add(message); // add the new message
+
+        return tempMessagesArrayList.toArray(new Message[0]); // convert back to array and return it
     }
 
     public void updateChat(User user, String newChat){
         Message message = new Message(user,newChat);
-        updateChatLogs(message);
-        chatBox.setListData(chatLogs); // update the gui componenet
+        Message[] tempChatLogs = updateChatLogs(message);
+        chatBox.setListData(tempChatLogs); // update the gui componenet
     }
 
     public void updateChat(User user, String newChat, ImageIcon image){
         Message message = new Message(user, newChat, image);
-        updateChatLogs(message);
-        chatBox.setListData(chatLogs); // update the gui componenet
+        Message[] tempChatLogs = updateChatLogs(message);
+        chatBox.setListData(tempChatLogs); // update the gui componenet
     }
 
     public void updateChat(User user, ImageIcon image){
         Message message = new Message(user, image);
-        updateChatLogs(message);
-        chatBox.setListData(chatLogs); // update the gui componenet
+        Message[] tempChatLogs = updateChatLogs(message);
+        chatBox.setListData(tempChatLogs); // update the gui componenet
     }
 
     public void updateOnlineJList(User[] onlineUsers) {
