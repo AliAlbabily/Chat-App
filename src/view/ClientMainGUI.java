@@ -263,7 +263,7 @@ public class ClientMainGUI extends JFrame
         return uploadedImage;
     }
 
-    private Message[] updateChatLogs(Message message) { // TODO : behöver testas !!!
+    private void updateChatBoxJList(Message message) {
         ListModel chatBoxListModel = chatBox.getModel(); // gets back what is inside chatbox-componenet (array)
         Message[] tmpMessages = new Message[chatBoxListModel.getSize()];
 
@@ -274,25 +274,23 @@ public class ClientMainGUI extends JFrame
         ArrayList<Message> tempMessagesArrayList = new ArrayList<>(Arrays.asList(tmpMessages)); // convert array to arraylist
         tempMessagesArrayList.add(message); // add the new message
 
-        return tempMessagesArrayList.toArray(new Message[0]); // convert back to array and return it
+        tmpMessages = tempMessagesArrayList.toArray(new Message[0]);
+        chatBox.setListData(tmpMessages); // update the gui component
     }
 
     public void updateChat(User user, String newChat){
         Message message = new Message(user,newChat);
-        Message[] tempChatLogs = updateChatLogs(message);
-        chatBox.setListData(tempChatLogs); // update the gui componenet
+        updateChatBoxJList(message);
     }
 
     public void updateChat(User user, String newChat, ImageIcon image){
         Message message = new Message(user, newChat, image);
-        Message[] tempChatLogs = updateChatLogs(message);
-        chatBox.setListData(tempChatLogs); // update the gui componenet
+        updateChatBoxJList(message);
     }
 
     public void updateChat(User user, ImageIcon image){
         Message message = new Message(user, image);
-        Message[] tempChatLogs = updateChatLogs(message);
-        chatBox.setListData(tempChatLogs); // update the gui componenet
+        updateChatBoxJList(message);
     }
 
     public void updateOnlineJList(User[] onlineUsers) {

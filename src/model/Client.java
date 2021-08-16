@@ -48,10 +48,8 @@ public class Client extends Thread {
                     else if(objReceived instanceof Message) {
                         Message messageReceived = (Message)objReceived;
                         System.out.println(messageReceived.GetUser().toString() + ": " + messageReceived.getMessage());
-
                         Message messageWithTime = getReceivedByClientTime(messageReceived);
                         updateChat(messageWithTime);
-
                     }
 
                 } catch (IOException | ClassNotFoundException e) {
@@ -101,5 +99,4 @@ public class Client extends Thread {
         message.setTimeReceivedByClient(now); // set a new time to the message
         return message;
     }
-
 }
