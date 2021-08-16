@@ -36,8 +36,7 @@ public class Controller {
                 clientGUI.closeClientConnectionWindow();
 
                 ArrayList<User> savedContacts = contacts.fetchContactsFromFile();
-                clientMainGUI.updateContactsJList(savedContacts);
-                clientMainGUI.setContacts(savedContacts);
+                clientMainGUI.updateContactsJList(savedContacts); // display your contacts in GUI once you are logged in
 
                 client.sendUserToServer(user);
                 break;
@@ -95,6 +94,10 @@ public class Controller {
 
     public ArrayList<User> getSelectedUsers() {
         return selectedUsers;
+    }
+
+    public Contacts getContacts() {
+        return contacts;
     }
     //</editor-fold>
 }

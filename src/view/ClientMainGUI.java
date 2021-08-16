@@ -42,7 +42,6 @@ public class ClientMainGUI extends JFrame
     private String message;
 
     // FIXME :
-    private ArrayList<User> contacts = new ArrayList<>();
     private Message[] chatLogs = {};
     //
 
@@ -142,9 +141,9 @@ public class ClientMainGUI extends JFrame
         removeContactBtn.setMargin(new Insets(1,1,1,1)); // changes the padding of the button
         removeContactBtn.setBounds(150, 280, 115, 50);
 
-
         Border blackline = BorderFactory.createLineBorder(Color.black);
-        User[] contactsArr = contacts.toArray(new User[0]);
+
+        User[] contactsArr = {};
         contactList = new JList(contactsArr);
         contactList.setBounds(30, 50, 235, 220);
         contactList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); // makes sure that one list index is selected at a time
@@ -266,10 +265,6 @@ public class ClientMainGUI extends JFrame
         return uploadedImage;
     }
 
-    public void setContacts(ArrayList<User> contacts) {
-        this.contacts = contacts;
-    }
-
     private void updateChatLogs(Message message) {
         Message[] tmp = new Message[chatLogs.length+1];
         for (int i = 0;i<chatLogs.length;i++) //Kopierar över de existerande meddelanden till en temporär array.
@@ -363,37 +358,43 @@ public class ClientMainGUI extends JFrame
             @Override
             public void actionPerformed(ActionEvent e) {
                 User selectedUser = onlineList.getSelectedValue();
+                ArrayList<User> tempContacts = controller.getContacts().fetchContactsFromFile();
 
                 if(selectedUser.getUsername().equals(controller.getUser().getUsername())) {
                     JOptionPane.showMessageDialog(null, "Cannot add yourself to contact list!");
                 }
-                else if(contacts.contains(selectedUser)) {
+                else if(tempContacts.contains(selectedUser)) {
                     JOptionPane.showMessageDialog(null, "The selected user has already been added!");
                 }
                 else {
-                    contacts.add(selectedUser);
-                    User[] contactsArr = contacts.toArray(new User[0]); // convert arrayList to array
+                    tempContacts.add(selectedUser);
+                    User[] contactsArr = tempContacts.toArray(new User[0]); // convert arrayList to array
                     contactList.setListData(contactsArr);
-                    controller.saveNewContact(selectedUser);
+                    controller.saveNewContact(selectedUser); // updates contacts in the file
                 }
+
+                System.out.println(tempContacts.size());
             }
         });
 
         removeContactBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println(contacts.size());
-                if (contacts.size()>0)
+                ArrayList<User> tempContacts = controller.getContacts().fetchContactsFromFile();
+
+                if (tempContacts.size() > 0)
                 {
                     User selectedContact = contactList.getSelectedValue(); //get selected user from contactlist
-                    contacts.remove(selectedContact);
-                    controller.removeContact(selectedContact);
-                    updateContactsJList(contacts);
+                    tempContacts.remove(selectedContact);
+                    updateContactsJList(tempContacts);
+                    controller.removeContact(selectedContact); // updates contacts in the file
                 }
                 else
                 {
                     JOptionPane.showMessageDialog(null, "You have no contacts to delete.");
                 }
+
+                System.out.println(tempContacts.size());
             }
         });
     }
