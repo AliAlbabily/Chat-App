@@ -60,7 +60,7 @@ public class Client extends Thread {
         }
     }
 
-    public void sendUserToServer(User newUser) {
+    public void sendUserToServer(User newUser) { //Skickar värdet "user" till servern. Som sedan servern tar emot.
         try {
             oos.writeObject(newUser);
             oos.flush();
@@ -69,7 +69,7 @@ public class Client extends Thread {
         }
     }
 
-    public void sendMessageToServer(Message message) {
+    public void sendMessageToServer(Message message) { //Skickar värdet "message" till servern. Som sedan servern tar emot.
         try {
             oos.writeObject(message);
             oos.flush();
