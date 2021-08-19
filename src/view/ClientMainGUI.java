@@ -92,6 +92,13 @@ public class ClientMainGUI extends JFrame
         scrollPane.setBounds(30,50,470,380);
         scrollPane.getSize(chatBox.getPreferredScrollableViewportSize());
 
+        scrollPane.getVerticalScrollBar().addAdjustmentListener(new AdjustmentListener() {
+            @Override
+            public void adjustmentValueChanged(AdjustmentEvent e) {
+                e.getAdjustable().setValue(e.getAdjustable().getMaximum());
+            }
+        });
+
         chatBox.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
