@@ -318,10 +318,14 @@ public class ClientMainGUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 User selectedUser = onlineList.getSelectedValue();
 
-                if(!controller.getSelectedUsers().contains(selectedUser)) { // if the selected user hasn't been added yet as a receiver
-                    controller.addSelectedUserToReceivers(selectedUser);
-                    updateReceiversLabel();
-                } else { JOptionPane.showMessageDialog(null, "Already added as a receiver!"); }
+                if(selectedUser == null) { // if nothing was selected
+                    JOptionPane.showMessageDialog(null, "You need to select a receiver from online users!");
+                } else {
+                    if(!controller.getSelectedUsers().contains(selectedUser)) { // if the selected user hasn't been added yet as a receiver
+                        controller.addSelectedUserToReceivers(selectedUser);
+                        updateReceiversLabel();
+                    } else { JOptionPane.showMessageDialog(null, "Already added as a receiver!"); }
+                }
             }
         });
 
@@ -330,10 +334,14 @@ public class ClientMainGUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 User selectedUser = contactList.getSelectedValue();
 
-                if(!controller.getSelectedUsers().contains(selectedUser)) { // if the selected user hasn't been added yet as a receiver
-                    controller.addSelectedUserToReceivers(selectedUser);
-                    updateReceiversLabel();
-                } else { JOptionPane.showMessageDialog(null, "Already added as a receiver!"); }
+                if(selectedUser == null) { // if nothing was selected
+                    JOptionPane.showMessageDialog(null, "You need to select a receiver from contacts!");
+                } else {
+                    if(!controller.getSelectedUsers().contains(selectedUser)) { // if the selected user hasn't been added yet as a receiver
+                        controller.addSelectedUserToReceivers(selectedUser);
+                        updateReceiversLabel();
+                    } else { JOptionPane.showMessageDialog(null, "Already added as a receiver!"); }
+                }
             }
         });
 
@@ -350,22 +358,25 @@ public class ClientMainGUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 User selectedUser = onlineList.getSelectedValue();
-                ArrayList<User> tempContacts = controller.getContacts().fetchContactsFromFile();
 
-                if(selectedUser.getUsername().equals(controller.getUser().getUsername())) {
-                    JOptionPane.showMessageDialog(null, "Cannot add yourself to contact list!");
-                }
-                else if(tempContacts.contains(selectedUser)) {
-                    JOptionPane.showMessageDialog(null, "The selected user has already been added!");
-                }
-                else {
-                    tempContacts.add(selectedUser);
-                    User[] contactsArr = tempContacts.toArray(new User[0]); // convert arrayList to array
-                    contactList.setListData(contactsArr);
-                    controller.saveNewContact(selectedUser); // updates contacts in the file
-                }
+                if(selectedUser == null) { // if nothing was selected
+                    JOptionPane.showMessageDialog(null, "You need to select a user from online users!");
+                } else {
+                    ArrayList<User> tempContacts = controller.getContacts().fetchContactsFromFile();
 
-                System.out.println(tempContacts.size());
+                    if(selectedUser.getUsername().equals(controller.getUser().getUsername())) {
+                        JOptionPane.showMessageDialog(null, "Cannot add yourself to contact list!");
+                    }
+                    else if(tempContacts.contains(selectedUser)) {
+                        JOptionPane.showMessageDialog(null, "The selected user has already been added!");
+                    }
+                    else {
+                        tempContacts.add(selectedUser);
+                        User[] contactsArr = tempContacts.toArray(new User[0]); // convert arrayList to array
+                        contactList.setListData(contactsArr);
+                        controller.saveNewContact(selectedUser); // updates contacts in the file
+                    }
+                }
             }
         });
 
