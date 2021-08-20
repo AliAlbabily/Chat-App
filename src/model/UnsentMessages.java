@@ -7,8 +7,6 @@ public class UnsentMessages {
 
     private HashMap<User, ArrayList<Message>> unsent = new HashMap<>();
 
-    // Hämta ArrayList - om null skapa en och placera i unsend
-    // Lägga till Message i ArrayList
     public synchronized void put(User user, Message message){
         if(unsent.get(user) == null) { // if a user doesn't have an array list (unsent messages)
             ArrayList<Message> userUnsentMessages = new ArrayList<>(); // create a new array list

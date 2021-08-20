@@ -34,11 +34,14 @@ public class Contacts {
             contacts = (ArrayList<User>) in.readObject();
         }
         catch (FileNotFoundException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
+            System.err.println(e);
         } catch (IOException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
+            System.err.println(e);
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
+            System.err.println(e);
         }
 
         return contacts;

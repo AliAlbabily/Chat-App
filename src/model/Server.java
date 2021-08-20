@@ -30,11 +30,11 @@ public class Server {
 
         public void run() {
             Socket socket = null;
-            System.out.println("Server startad");
+            System.out.println("The server is now running");
             try (ServerSocket serverSocket = new ServerSocket(port)) {
                 while(true) {
                     try {
-                        socket = serverSocket.accept(); // Lyssna efter anslutande klienter
+                        socket = serverSocket.accept(); // listen for connecting clients
                         new ClientHandler(socket).start();
                     } catch(IOException e) {
                         System.err.println(e);
@@ -45,7 +45,7 @@ public class Server {
             } catch(IOException e) {
                 System.err.println(e);
             }
-            System.out.println("Server stoppad");
+            System.out.println("The server has been stopped");
         }
     }
 
@@ -71,29 +71,26 @@ public class Server {
 
                     if(objReceived instanceof User) {
                         key = (User)objReceived;
-                        globalOnlineUsers.put((User)objReceived, this); // spara en referens av ClientHandler i hashmapen med sin motsvarande User
+                        globalOnlineUsers.put(key, this); // add a new online user
                         updateOnlineUsersList();
                         checkIfUserHasUnsentMessages((User)objReceived);
                     }
                     else if(objReceived instanceof Message) {
                         Message messageReceived = (Message)objReceived;
-                        Message messageWithTime = getReceivedByServerTime(messageReceived);
-
-                        logMessage(messageWithTime);
+                        Message messageWithServerTime = getMessageWithServerTime(messageReceived);
+                        logMessage(messageWithServerTime);
                         updateLoggedMessages();
-
-                        sendMessageToReceivers(messageWithTime);
+                        sendMessageToReceivers(messageWithServerTime);
                     }
-
                 }
             }
             catch (IOException | ClassNotFoundException e) {
                 try {
+                    System.out.println("Client disconnected!");
                     ois.close();
                     oos.close();
                     socket.close();
-                    System.out.println("Client disconnected!");
-                    globalOnlineUsers.getHashMapList().remove(key); // tar bort användaren som avslutar sin anslutning från listan
+                    globalOnlineUsers.getHashMapList().remove(key); // remove an online user
                     updateOnlineUsersList();
 
                 } catch (Exception e2) {}
@@ -109,7 +106,6 @@ public class Server {
         }
     }
 
-    // meddela andra klienter om nuvarande anslutna användare
     private void updateOnlineUsersList() throws IOException {
         ArrayList<User> onlineUsers = new ArrayList<>();
 
@@ -171,47 +167,31 @@ public class Server {
         }
     }
 
-    private void sendMessageToCertainUser(User user, Message message) throws IOException {
-        // FIXME : the unused code leads to an error !
-//        User[] filteredReceivers = message.filterReceivers(user, message.getArrayOfReceivers());
-//        message.setArrayOfReceivers(filteredReceivers);
+    private void sendMessageToCertainUser(User userToSendTo, Message message) throws IOException {
+        ClientHandler client = globalOnlineUsers.getHashMapList().get(userToSendTo);
 
-        ClientHandler client = globalOnlineUsers.getHashMapList().get(user);
-
-        if (client.getSocket().isConnected()) {
-            client.getOos().writeObject(message);
-            client.getOos().flush();
-        } else {
-            System.out.println("Error");
-        }
+        client.getOos().writeObject(message);
+        client.getOos().flush();
     }
 
     private void logMessage(Message receivedMessage) {
         loggedMessages.add(receivedMessage); // log every received message by the server
     }
 
-    private Message getReceivedByServerTime(Message message) {
+    private Message getMessageWithServerTime(Message message) {
         LocalDateTime now = LocalDateTime.now(); // time now
         message.setReceivedByServerTime(now); // set a new time to the message
         return message;
     }
 
+    private void updateLoggedMessages() {
+        Message[] tempLoggedMessagesArr = loggedMessages.toArray(new Message[0]); // convert the arraylist to array
+        serverController.updateLogsGUI(tempLoggedMessagesArr);
+    }
+
+    //<editor-fold desc="Getters and setters">
     public ArrayList<Message> getLoggedMessages() {
         return loggedMessages;
     }
-
-    private void updateLoggedMessages() {
-        Message[] tempLoggedMessagesArr = loggedMessages.toArray(new Message[0]); // convert the arraylist to array
-
-//        serverController.updateLogsGUI(loggedMessagesArr); // TODO : implement later !
-
-        for( int i = 0; i < tempLoggedMessagesArr.length; i++ ) { // for each message
-            Message tempMessage = tempLoggedMessagesArr[i];
-            System.out.println(tempMessage.toString() + " | Num of receivers: " + tempMessage.getArrayOfReceivers().length + " | time: " + tempMessage.getTimeReceivedByServer());
-            if(tempMessage.getArrayOfReceivers()[0] == null) {
-                System.out.println("True!! (first element is null)");
-            }
-        }
-        System.out.println("**********************************************");
-    }
+    //</editor-fold>
 }

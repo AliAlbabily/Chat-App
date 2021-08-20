@@ -14,11 +14,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class ClientMainGUI extends JFrame
-{
-    private final Controller controller;
+public class ClientMainGUI extends JFrame {
 
-    //Komponenter
     private JPanel leftChatPanel;
     private JPanel rightContactsPanel;
     private JPanel southPanel;
@@ -42,24 +39,23 @@ public class ClientMainGUI extends JFrame
     private ImageIcon uploadedImage = null;
     private String message;
 
-    public ClientMainGUI(Controller controller)
-    {
+    private final Controller controller;
+
+    public ClientMainGUI(Controller controller) {
         this.controller = controller;
         InitializePanels();
         addListeners();
         controller.addSelectedUserToReceivers(controller.getUser()); // user (the owner of the gui) is always selected as a receiver by default
     }
 
-    public void InitializePanels()
-    {
+    public void InitializePanels() {
         createMainFrame();
         createSouthPanel();
         createLeftPanel();
         createRightPanel();
     }
 
-    public void createMainFrame()
-    {
+    public void createMainFrame() {
         frame = new JFrame("Logged in");
         frame.setBounds(0, 0, 900, 820);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -69,19 +65,18 @@ public class ClientMainGUI extends JFrame
         frame.setLocationRelativeTo(null); // window gets placed on the middle of the screen
     }
 
-    public void createLeftPanel()
-    {
+    public void createLeftPanel() {
         leftChatPanel = new JPanel();
         leftChatPanel.setBorder(BorderFactory.createLineBorder(Color.black));
         leftChatPanel.setBounds(20,20,530,450);
         leftChatPanel.setLayout(null);
 
-        //Skapar chatt label
+        // chat label
         JLabel lblChatbox = new JLabel("Chat");
         lblChatbox.setBounds(30,10,100,30);
         lblChatbox.setFont(labelFont);
 
-        //Skapar chattbox
+        // chatBox
         Message[] chatLogs = {};
         chatBox = new JList<>(chatLogs);
         chatBox.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -126,8 +121,7 @@ public class ClientMainGUI extends JFrame
         frame.add(leftChatPanel);
     }
 
-    public void createRightPanel()
-    {
+    public void createRightPanel() {
         rightContactsPanel = new JPanel();
         rightContactsPanel.setBorder(BorderFactory.createLineBorder(Color.black));
         rightContactsPanel.setBounds(570,20,295,740);
@@ -179,8 +173,7 @@ public class ClientMainGUI extends JFrame
         frame.add(rightContactsPanel);
     }
 
-    public void createSouthPanel()
-    {
+    public void createSouthPanel() {
         southPanel = new JPanel();
         southPanel.setBorder(BorderFactory.createLineBorder(Color.black));
         southPanel.setBounds(20, 490, 530, 270);
@@ -196,8 +189,7 @@ public class ClientMainGUI extends JFrame
         messageBox.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ENTER)
-                {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                     message = messageBox.getText();
                     controller.buttonPressed(ButtonType.Send);
                     uploadedImage = null;
@@ -224,11 +216,10 @@ public class ClientMainGUI extends JFrame
         openFileButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-               if(e.getSource() == openFileButton)
-               {
+               if(e.getSource() == openFileButton) {
                    int returnVal = fileChooser.showOpenDialog(ClientMainGUI.this);
-                   if (returnVal == JFileChooser.APPROVE_OPTION)
-                   {
+
+                   if (returnVal == JFileChooser.APPROVE_OPTION) {
                        File selectedImage = fileChooser.getSelectedFile();
                        insertedImageLabel.setText(selectedImage.getName());
                        uploadedImage = new ImageIcon(String.valueOf((selectedImage)));
@@ -250,7 +241,6 @@ public class ClientMainGUI extends JFrame
                 }
             }
         });
-
 
         southPanel.add(receiversNamesLabel);
         southPanel.add(messageBox);
@@ -384,19 +374,15 @@ public class ClientMainGUI extends JFrame
             public void actionPerformed(ActionEvent e) {
                 ArrayList<User> tempContacts = controller.getContacts().fetchContactsFromFile();
 
-                if (tempContacts.size() > 0)
-                {
+                if (tempContacts.size() > 0) {
                     User selectedContact = contactList.getSelectedValue(); //get selected user from contactlist
                     tempContacts.remove(selectedContact);
                     updateContactsJList(tempContacts);
                     controller.removeContact(selectedContact); // updates contacts in the file
                 }
-                else
-                {
+                else {
                     JOptionPane.showMessageDialog(null, "You have no contacts to delete.");
                 }
-
-                System.out.println(tempContacts.size());
             }
         });
     }

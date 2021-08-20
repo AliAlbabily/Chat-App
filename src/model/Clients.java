@@ -11,18 +11,8 @@ public class Clients implements Serializable {
         clients.put(user,client);
     }
 
-    public synchronized Server.ClientHandler get(User user) {
-        return get(user);
-    }
-
-    // fler synchronized-metoder som behövs
-
     public synchronized HashMap<User, Server.ClientHandler> getHashMapList() {
         return clients;
-    }
-
-    public void setClients(HashMap<User, Server.ClientHandler> clients) {
-        this.clients = clients;
     }
 }
 

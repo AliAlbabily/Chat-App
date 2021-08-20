@@ -15,12 +15,12 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
+public class ClientLoginGUI extends JFrame implements ActionListener {
 
-public class ClientGUI extends JFrame implements ActionListener {
-
-    private Controller controller;
     private JPanel panel = new JPanel();
     private JFrame frame = new JFrame();
+
+    private Controller controller;
 
     String[] images = {"Levi", "Mikasa", "Bakugo", "Robot"};
     JComboBox imageBox = new JComboBox();
@@ -31,9 +31,8 @@ public class ClientGUI extends JFrame implements ActionListener {
     private JButton connectBtn;
     JTextField userText;
 
-    public ClientGUI(Controller controller) {
+    public ClientLoginGUI(Controller controller) {
         this.controller = controller;
-
         loginBox();
     }
 

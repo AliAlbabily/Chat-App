@@ -5,81 +5,53 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-
 public class Message implements Serializable {
+
     private User sender;
     private String message;
     private ImageIcon sentImage;
-    private User[] arrayOfReceivers = new User[5];
+    private User[] arrayOfReceivers = new User[5]; // you can select up to 5 users at a time
     private LocalDateTime timeReceivedByServer;
     private LocalDateTime timeReceivedByClient;
 
-    public Message(User user, String message)
-    {
+    public Message(User user, String message) {
         this.sender = user;
         this.message = message;
     }
 
-    public Message(User user, String message, ImageIcon image)
-    {
+    public Message(User user, String message, ImageIcon image) {
         this.sender = user;
         this.message = message;
         this.sentImage = image;
     }
 
-    public Message(User sender, String message, ImageIcon sentImage, User[] arrayOfReceivers)
-    {
+    public Message(User sender, String message, ImageIcon sentImage, User[] arrayOfReceivers) {
         this.sender = sender;
         this.message = message;
         this.sentImage = sentImage;
         this.arrayOfReceivers = arrayOfReceivers;
     }
 
-    public Message(User sender, ImageIcon sentImage)
-    {
+    public Message(User sender, ImageIcon sentImage) {
         this.sender = sender;
         this.sentImage = sentImage;
     }
 
-    // filter the current array of receivers and keep only the given user
-    public User[] filterReceivers(User offlineUserToKeep, User[] receiversToFilter) {
-        User[] tempArray = new User[1]; // new array of receivers
+    public String printMessageInfoWithTime(LocalDateTime time) {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        String receiversStr = "";
 
-        for( User userReceiver : receiversToFilter ) {
-            if( userReceiver.getUsername().equals(offlineUserToKeep.getUsername()) ) {
-                tempArray[0] = userReceiver;
+        if(arrayOfReceivers.length != 0) { // when the array is not empty
+            for ( int i = 0; i < arrayOfReceivers.length; i++ ) {
+                User userTemp = arrayOfReceivers[i];
+                receiversStr = receiversStr + userTemp.toString() + ", ";
             }
         }
 
-        return tempArray;
-    }
-
-    public String printMessageInfoWithTime(LocalDateTime time) {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-//        String receiversStr = "";
-
-//        if(arrayOfReceivers.length != 0) { // when the array is not empty
-//            for ( int i = 0; i < arrayOfReceivers.length; i++ ) {
-//                User userTemp = arrayOfReceivers[i];
-//                receiversStr = receiversStr + userTemp.toString() + ", ";
-//            }
-//        }
-
-//        return toString() + " | Sent to: " + receiversStr + "| Received by server at: " + dtf.format(time);
-        return toString() + " | Received by server at: " + dtf.format(time);
+        return toString() + " | Sent to: " + receiversStr + "| Received by server at: " + dtf.format(time);
     }
 
     //<editor-fold desc="Getters and setters">
-    public ImageIcon GetUserPicture()
-    {
-        return sender.getImageIcon();
-    }
-
-    public String GetUsername()
-    {
-        return sender.getUsername();
-    }
-
     public User GetUser()
     {
         return sender;
@@ -97,26 +69,18 @@ public class Message implements Serializable {
         return arrayOfReceivers;
     }
 
-    public void setArrayOfReceivers(User[] arrayOfReceivers) {
-        this.arrayOfReceivers = arrayOfReceivers;
-    }
-
     public LocalDateTime getTimeReceivedByServer() {
         return timeReceivedByServer;
     }
-
-    public LocalDateTime getTimeReceivedByClient(){
-        return timeReceivedByClient;
-    }
-
 
     public void setReceivedByServerTime(LocalDateTime timeReceivedByServer) {
         this.timeReceivedByServer = timeReceivedByServer;
     }
 
-    public void setTimeReceivedByClient(LocalDateTime timeReceivedByClient){
+    public void setTimeReceivedByClient(LocalDateTime timeReceivedByClient) {
         this.timeReceivedByClient = timeReceivedByClient;
     }
+    //</editor-fold>
 
     @Override
     public String toString() {
@@ -127,9 +91,7 @@ public class Message implements Serializable {
             return sender + ": (attached image)";
         }
         else {
-            return sender+": " + message;
+            return sender + ": " + message;
         }
     }
-
-//</editor-fold>
 }

@@ -2,7 +2,7 @@ package controller;
 
 import model.*;
 import view.ButtonType;
-import view.ClientGUI;
+import view.ClientLoginGUI;
 import view.ClientMainGUI;
 
 import javax.swing.*;
@@ -10,31 +10,29 @@ import java.util.ArrayList;
 
 public class Controller {
 
-    private ClientMainGUI clientMainGUI; // client main view
-    private final ClientGUI clientGUI; // client connect view
+    private ClientMainGUI clientMainGUI; // client main-view
+    private final ClientLoginGUI clientLoginGUI; // client login-view
     private User user;
     private Client client;
     private Contacts contacts;
     private ArrayList<User> selectedUsers = new ArrayList<>(); // receivers
 
     public Controller() {
-        clientGUI = new ClientGUI(this);
+        clientLoginGUI = new ClientLoginGUI(this);
         contacts = new Contacts();
     }
 
     public void buttonPressed(ButtonType button) {
-
         switch (button) {
             case Connect:
-                String username = clientGUI.getUsername(); // Hämtar username från GUI
-                ImageIcon imageIcon = clientGUI.getImageIcon(); // Hämtar imageIcon från GUI
+                String username = clientLoginGUI.getUsername(); // Hämtar username från GUI
+                ImageIcon imageIcon = clientLoginGUI.getImageIcon(); // Hämtar imageIcon från GUI
                 user = new User(username, imageIcon); // skapar ny User-instans
 
-                client = new Client("25.82.118.228", 2343, this); // skapar ny Client-instans
-
+                client = new Client("127.0.0.1", 2343, this); // skapar ny Client-instans
 
                 clientMainGUI = new ClientMainGUI(this); // öppna klient fönstret
-                clientGUI.closeClientConnectionWindow(); //Stänger ner inloggningsfönster
+                clientLoginGUI.closeClientConnectionWindow(); //Stänger ner inloggningsfönster
 
                 ArrayList<User> savedContacts = contacts.fetchContactsFromFile(); //Laddar upp alla sparade kontakter från fil
                 clientMainGUI.updateContactsJList(savedContacts); // display your contacts in GUI once you are logged in
@@ -75,8 +73,7 @@ public class Controller {
         contacts.saveNewContactInFile(user);
     }
 
-    public void removeContact(User user) //tar bort kontakt från fil
-    {
+    public void removeContact(User user) { //tar bort kontakt från fil
         contacts.removeContactInFile(user);
     }
 
