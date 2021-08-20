@@ -78,8 +78,11 @@ public class Server {
                     else if(objReceived instanceof Message) {
                         Message messageReceived = (Message)objReceived;
                         Message messageWithTime = getReceivedByServerTime(messageReceived);
-                        sendMessageToReceivers(messageWithTime);
+
                         logMessage(messageWithTime);
+                        updateLoggedMessages();
+
+                        sendMessageToReceivers(messageWithTime);
                     }
 
                 }
@@ -169,8 +172,9 @@ public class Server {
     }
 
     private void sendMessageToCertainUser(User user, Message message) throws IOException {
-        User[] filteredReceivers = message.filterReceivers(user, message.getArrayOfReceivers());
-        message.setArrayOfReceivers(filteredReceivers);
+        // FIXME : the unused code leads to an error !
+//        User[] filteredReceivers = message.filterReceivers(user, message.getArrayOfReceivers());
+//        message.setArrayOfReceivers(filteredReceivers);
 
         ClientHandler client = globalOnlineUsers.getHashMapList().get(user);
 
@@ -184,8 +188,6 @@ public class Server {
 
     private void logMessage(Message receivedMessage) {
         loggedMessages.add(receivedMessage); // log every received message by the server
-        Message[] loggedMessagesArr = loggedMessages.toArray(new Message[0]); // convert the arraylist to array
-        serverController.updateLogsGUI(loggedMessagesArr);
     }
 
     private Message getReceivedByServerTime(Message message) {
@@ -196,5 +198,20 @@ public class Server {
 
     public ArrayList<Message> getLoggedMessages() {
         return loggedMessages;
+    }
+
+    private void updateLoggedMessages() {
+        Message[] tempLoggedMessagesArr = loggedMessages.toArray(new Message[0]); // convert the arraylist to array
+
+//        serverController.updateLogsGUI(loggedMessagesArr); // TODO : implement later !
+
+        for( int i = 0; i < tempLoggedMessagesArr.length; i++ ) { // for each message
+            Message tempMessage = tempLoggedMessagesArr[i];
+            System.out.println(tempMessage.toString() + " | Num of receivers: " + tempMessage.getArrayOfReceivers().length + " | time: " + tempMessage.getTimeReceivedByServer());
+            if(tempMessage.getArrayOfReceivers()[0] == null) {
+                System.out.println("True!! (first element is null)");
+            }
+        }
+        System.out.println("**********************************************");
     }
 }
